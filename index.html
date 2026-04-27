@@ -708,7 +708,7 @@ function openTxnModal(id){
   const today=new Date().toISOString().slice(0,10);
 
   // Customer options from loyalty list
-  const custOpts=`<option value="">— Type name or select —</option>`+custs.map(c=>`<option value="${c.id}" data-addr="${c.addr||''}" data-visits="${c.visits}" data-card="${Math.ceil(c.visits/15)||1}">${c.name}${c.addr?' — '+c.addr:''}</option>`).join('');
+  const custOpts=`<option value="">— Type name or select —</option>`+custs.map(c=>`<option value="${c.id}" data-addr="${c.addr||''}" data-visits="${c.visits}" data-card="${Math.ceil(c.visits/15)||1}">${c.name}</option>`).join('');
 
   document.getElementById('MBOX').innerHTML=`
     <h3>${tx?'Edit Transaction':'New Transaction'}</h3>
@@ -781,7 +781,7 @@ function openTxnModal(id){
 function txFillCust(sel){
   const opt=sel.options[sel.selectedIndex];
   if(!opt||!opt.value)return;
-  document.getElementById('txName').value=opt.text.split(' — ')[0];
+  document.getElementById('txName').value=opt.text;
   document.getElementById('txAddr').value=opt.dataset.addr||'';
   const visits=parseInt(opt.dataset.visits||0);
   document.getElementById('txCard').value=Math.ceil((visits+1)/15)||1;
