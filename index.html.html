@@ -1,0 +1,1553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cayabyab Laundry — Business Tracker</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --teal:#1D9E75;--tl:#E1F5EE;--td:#0F6E56;--tm:#5DCAA5;
+  --bz:#C97B2E;--bzl:#FDF3E7;--sv:#5B6A8E;--svl:#EEF0F8;--gd:#C8990A;--gdl:#FEF8E2;
+  --co:#D85A30;--bl:#185FA5;
+  --g50:#F9FAFB;--g100:#F3F4F6;--g200:#E5E7EB;--g400:#9CA3AF;--g500:#6B7280;--g700:#374151;--g900:#111827;
+  --r:12px;--rs:8px;--sh:0 1px 4px rgba(0,0,0,.09);--shm:0 4px 16px rgba(0,0,0,.13);
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#EDF7F3;color:var(--g900);min-height:100vh}
+/* HDR */
+.hdr{background:var(--td);padding:12px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.25)}
+.hdr-brand{display:flex;align-items:center;gap:10px}
+.hico{width:36px;height:36px;background:rgba(255,255,255,.18);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:20px}
+.hdr h1{color:#fff;font-size:16px;font-weight:700;line-height:1.2}
+.hsub{color:rgba(255,255,255,.6);font-size:11px}
+/* NAV */
+.nav{display:flex;background:#fff;border-bottom:2px solid var(--g200);padding:0 12px;overflow-x:auto}
+.ntab{padding:11px 16px;font-size:12px;font-weight:600;color:var(--g500);cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;white-space:nowrap;user-select:none;flex-shrink:0}
+.ntab.active{color:var(--td);border-bottom-color:var(--teal)}
+/* COMMON */
+.tabp{display:none}.tabp.active{display:block}
+.pgc{padding:16px 20px 80px}
+.card{background:#fff;border-radius:var(--r);box-shadow:var(--sh);padding:16px;margin-bottom:14px}
+.card-title{font-size:14px;font-weight:700;color:var(--g700);margin-bottom:12px;display:flex;align-items:center;justify-content:space-between}
+.card-title span{font-size:11px;color:var(--g400);font-weight:500}
+/* SBAR */
+.sbar{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--g200)}
+.sb{background:#fff;padding:12px 14px;text-align:center}
+.sbn{font-size:22px;font-weight:800;line-height:1}
+.sbl{font-size:10px;color:var(--g500);margin-top:3px;font-weight:500}
+.c-t{color:var(--teal)}.c-g{color:var(--gd)}.c-b{color:var(--bz)}.c-r{color:var(--co)}.c-bl{color:var(--bl)}
+/* CTRL ROW */
+.ctrl{padding:10px 20px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;background:#fff;border-bottom:1px solid var(--g200)}
+.srch{flex:1;min-width:160px;padding:8px 14px 8px 34px;border:1.5px solid var(--g200);border-radius:20px;font-size:13px;outline:none;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='13' height='13' viewBox='0 0 24 24' fill='none' stroke='%239CA3AF' stroke-width='2.5'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E") no-repeat 11px center}
+.srch:focus{border-color:var(--teal)}
+.ftabs{display:flex;gap:4px;flex-wrap:wrap}
+.ft{padding:6px 12px;border-radius:20px;border:1.5px solid var(--g200);background:#fff;font-size:12px;font-weight:600;cursor:pointer;color:var(--g700)}
+.ft.active{background:var(--teal);color:#fff;border-color:var(--teal)}
+.ft.fa.active{background:var(--gd);border-color:var(--gd)}.ft.fb.active{background:var(--bz);border-color:var(--bz)}
+.ss{padding:7px 12px;border:1.5px solid var(--g200);border-radius:20px;font-size:12px;background:#fff;color:var(--g700);outline:none;cursor:pointer}
+/* BTN */
+.btn{padding:8px 16px;border-radius:var(--rs);border:none;font-size:13px;font-weight:600;cursor:pointer;transition:.15s}
+.btn-p{background:var(--teal);color:#fff}.btn-p:hover{background:var(--td)}
+.btn-s{background:var(--g100);color:var(--g700);border:1.5px solid var(--g200)}.btn-s:hover{background:var(--g200)}
+.btn-d{background:#FEE2E2;color:#DC2626}.btn-d:hover{background:#FECACA}
+.btn-sm{padding:6px 10px;font-size:12px}
+.btn-hp{background:#fff;color:var(--td);border:none;padding:8px 16px;border-radius:20px;font-size:13px;font-weight:600;cursor:pointer}
+.btn-hs{background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.3);padding:8px 16px;border-radius:20px;font-size:13px;font-weight:600;cursor:pointer}
+/* MONTH PICKER */
+.mpick{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:14px}
+.mp{padding:7px 16px;border-radius:20px;border:1.5px solid var(--g200);background:#fff;font-size:12px;font-weight:700;cursor:pointer;color:var(--g700)}
+.mp.active{background:var(--teal);color:#fff;border-color:var(--teal)}
+/* TABLE */
+.tbl{width:100%;border-collapse:collapse;font-size:13px}
+.tbl th{background:var(--g50);padding:9px 12px;text-align:left;font-size:11px;font-weight:700;color:var(--g500);text-transform:uppercase;letter-spacing:.04em;border-bottom:1.5px solid var(--g200)}
+.tbl td{padding:9px 12px;border-bottom:1px solid var(--g100);vertical-align:middle}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:var(--g50)}
+.tbl .tfoot td{background:var(--tl);font-weight:700;color:var(--td);border-top:2px solid var(--tm)}
+input.ti{width:100%;padding:6px 8px;border:1.5px solid var(--g200);border-radius:6px;font-size:13px;outline:none;background:#fff}
+input.ti:focus{border-color:var(--teal);background:#fff}
+input.ti.num{text-align:right}
+.pill{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600}
+.pill-c{background:var(--tl);color:var(--td)}.pill-g{background:var(--bll);color:var(--bl)}
+/* LOYALTY CARDS */
+.cgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:13px}
+.cc{background:#fff;border-radius:var(--r);box-shadow:var(--sh);overflow:hidden;border:2px solid transparent;transition:transform .15s,box-shadow .15s}
+.cc:hover{transform:translateY(-2px);box-shadow:var(--shm)}
+.cc.ig{border-color:var(--gd)}.cc.ib{border-color:var(--bz)}.cc.is{border-color:var(--sv)}.cc.in{border-color:#F59E0B}
+.msb{padding:6px 14px;font-size:11px;font-weight:700;text-align:center;letter-spacing:.05em;color:#fff;display:none}
+.cc.ig .msb,.cc.ib .msb,.cc.is .msb{display:block}
+.cc.ig .msb{background:var(--gd)}.cc.ib .msb{background:var(--bz)}.cc.is .msb{background:var(--sv)}
+.cbd{padding:13px 14px}
+.ch{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:start;margin-bottom:10px}
+.cn{font-size:14px;font-weight:700;color:var(--g900);line-height:1.2}
+.adr{display:flex;align-items:center;gap:4px;margin-top:5px;padding:4px 8px;background:var(--g50);border-radius:6px;border:1px solid var(--g200)}
+.adr.miss{background:#FFFBEB;border-color:#FDE68A}
+.cbdg{font-size:10px;padding:3px 9px;border-radius:20px;background:var(--tl);color:var(--td);font-weight:700;white-space:nowrap;flex-shrink:0}
+.vr{display:flex;align-items:center;justify-content:space-between;margin:0 0 10px;padding:8px 10px;background:var(--tl);border-radius:8px}
+.vn{font-size:28px;font-weight:800;color:var(--td);line-height:1}
+.vl{font-size:10px;color:var(--td);font-weight:700;text-transform:uppercase;letter-spacing:.04em;opacity:.7;margin-top:1px}
+.vrt{text-align:right}.vcp{font-size:12px;font-weight:700;color:var(--td)}.vnx{font-size:11px;color:var(--bz);font-weight:700;margin-top:2px}
+.sg{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;margin-bottom:9px}
+.st{aspect-ratio:1;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800}
+.st.e{background:var(--g100);border:1.5px dashed var(--g200);color:var(--g400)}
+.st.f{background:var(--teal);color:#fff;font-size:12px}.st.f::after{content:"✓"}
+.st.m5.e{background:var(--bzl);border-color:var(--bz);color:var(--bz)}.st.m5.f{background:var(--bz);color:#fff}.st.m5.f::after{content:"★"}
+.st.m10.e{background:var(--svl);border-color:var(--sv);color:var(--sv)}.st.m10.f{background:var(--sv);color:#fff}.st.m10.f::after{content:"★"}
+.st.m15.e{background:var(--gdl);border-color:var(--gd);color:var(--gd)}.st.m15.f{background:var(--gd);color:#fff}.st.m15.f::after{content:"★"}
+.sleg{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+.sl{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--g500)}
+.sd{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.ca{display:flex;gap:4px}
+.bv{flex:1;padding:8px;background:var(--teal);color:#fff;border:none;border-radius:var(--rs);font-size:13px;font-weight:700;cursor:pointer}
+.bv:hover{background:var(--td)}
+.bsm2{padding:8px 10px;border:1.5px solid var(--g200);background:#fff;color:var(--g700);border-radius:var(--rs);font-size:12px;cursor:pointer}
+.bdl{padding:8px 10px;border:none;background:#FEE2E2;color:#DC2626;border-radius:var(--rs);font-size:12px;cursor:pointer}
+.ht{font-size:11px;color:var(--teal);cursor:pointer;margin-top:7px;display:block;font-weight:600;user-select:none}
+.hp{display:none;margin-top:6px;border-top:1px solid var(--g100);padding-top:6px}
+.hi{font-size:11px;color:var(--g500);padding:3px 0;display:flex;justify-content:space-between}
+.hm{color:var(--gd);font-weight:700}
+/* DASHBOARD */
+.kstrip{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--g200)}
+.kb{background:#fff;padding:13px 15px}
+.kl{font-size:10px;color:var(--g500);font-weight:700;text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px}
+.kv{font-size:20px;font-weight:800}.ks{font-size:11px;color:var(--g400);margin-top:2px}
+.mc3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+.mc{background:#fff;border-radius:var(--r);padding:14px;box-shadow:var(--sh);border-top:4px solid var(--g200)}
+.mc.mf{border-top-color:#378ADD}.mc.mm{border-top-color:var(--tm)}.mc.ma{border-top-color:var(--teal)}
+.mcm{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
+.mcm.mf{color:#185FA5}.mcm.mm{color:var(--tm)}.mcm.ma{color:var(--teal)}
+.mr2{display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px solid var(--g100);font-size:12px}
+.mr2:last-child{border-bottom:none}.ml2{color:var(--g500)}.mv2{font-weight:700}
+.mnet{color:#3B6D11;font-size:14px;font-weight:800}
+.drow{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.leg{display:flex;gap:12px;margin-bottom:8px;flex-wrap:wrap}
+.li{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--g500)}
+.lb{width:10px;height:10px;border-radius:2px;flex-shrink:0}
+.mtbar{display:flex;gap:4px;flex-wrap:wrap}
+.mt{padding:7px 16px;border-radius:20px;border:1.5px solid var(--g200);background:#fff;font-size:12px;font-weight:700;cursor:pointer;color:var(--g700)}
+.mt.active{background:var(--teal);color:#fff;border-color:var(--teal)}
+.dctrl{padding:11px 20px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;background:#fff;border-bottom:1px solid var(--g200)}
+.dctrl h3{font-size:14px;font-weight:700;color:var(--g700);flex:1}
+.chart-wrap{width:100%;overflow:visible}
+/* MODAL */
+.mov{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;z-index:200}
+.modal{background:#fff;border-radius:var(--r);padding:22px;width:400px;max-width:calc(100vw - 24px);box-shadow:0 20px 60px rgba(0,0,0,.25);max-height:90vh;overflow-y:auto}
+.modal h3{font-size:17px;font-weight:700;margin-bottom:14px}
+.mgrid{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.mgrid .ff{grid-column:1/-1}
+.fg{margin-bottom:0}
+.fg label{font-size:11px;font-weight:700;color:var(--g500);display:block;margin-bottom:4px;text-transform:uppercase;letter-spacing:.04em}
+.fg input,.fg select,.fg textarea{width:100%;padding:9px 11px;border:1.5px solid var(--g200);border-radius:var(--rs);font-size:13px;outline:none;font-family:inherit}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--teal)}
+.fg .hint{font-size:11px;color:var(--g400);margin-top:3px}
+.macts{display:flex;gap:8px;margin-top:16px}
+.bp{flex:1;padding:10px;background:var(--teal);color:#fff;border:none;border-radius:var(--rs);font-size:14px;font-weight:700;cursor:pointer}
+.bc{padding:10px 16px;background:var(--g100);color:var(--g700);border:none;border-radius:var(--rs);font-size:14px;cursor:pointer}
+/* TOAST */
+.toast{position:fixed;bottom:22px;right:22px;padding:11px 18px;border-radius:10px;font-size:13px;font-weight:600;z-index:300;transform:translateY(90px);transition:transform .3s;max-width:300px;box-shadow:var(--shm);color:#fff;background:var(--g900)}
+.toast.vis{transform:translateY(0)}
+.tg{background:var(--gd)}.tb{background:var(--bz)}.ts{background:var(--sv)}.tt{background:var(--td)}.tr{background:var(--co)}
+.empty{grid-column:1/-1;text-align:center;padding:40px 20px;color:var(--g500)}
+@media(max-width:620px){.mc3,.drow{grid-template-columns:1fr}.kstrip,.sbar{grid-template-columns:repeat(2,1fr)}.mgrid{grid-template-columns:1fr}}
+
+/* TRANSACTION MODAL */
+.svc-line{display:grid;grid-template-columns:1fr 60px 70px 70px 32px;gap:6px;align-items:center;margin-bottom:6px}
+.svc-line select,.svc-line input{padding:7px 8px;border:1.5px solid var(--g200);border-radius:6px;font-size:12px;outline:none;width:100%;font-family:inherit}
+.svc-line select:focus,.svc-line input:focus{border-color:var(--teal)}
+.svc-hdr{display:grid;grid-template-columns:1fr 60px 70px 70px 32px;gap:6px;margin-bottom:4px}
+.svc-hdr span{font-size:10px;font-weight:700;color:var(--g500);text-transform:uppercase;letter-spacing:.04em}
+.add-svc-btn{background:var(--tl);color:var(--td);border:1.5px dashed var(--tm);border-radius:6px;padding:6px;font-size:12px;font-weight:600;cursor:pointer;width:100%;margin-top:4px}
+.total-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-top:1.5px solid var(--g200);margin-top:8px;font-size:14px;font-weight:700}
+.stamp-note{background:var(--tl);border:1px solid var(--tm);border-radius:6px;padding:8px 10px;font-size:12px;color:var(--td);margin-top:10px;display:none}
+.pill-del{background:#E6F1FB;color:#185FA5}.pill-pik{background:#FDF3E7;color:#C97B2E}
+</style>
+</head>
+<body>
+<div class="hdr">
+  <div class="hdr-brand"><div class="hico">🧺</div><div><h1>Cayabyab Laundry</h1><div class="hsub">Business Tracker</div></div></div>
+  <div style="display:flex;gap:8px">
+    <button class="btn-hs" onclick="backupData()" title="Download a backup file of all your data">💾 Backup</button>
+    <button class="btn-hs" onclick="document.getElementById('restoreInput').click()" title="Restore from a backup file">📂 Restore</button>
+    <input type="file" id="restoreInput" accept=".json" style="display:none" onchange="restoreData(event)">
+    <button class="btn-hs" onclick="exportCSV()">📥 Export CSV</button>
+    <button class="btn-hp" id="hdrBtn" onclick="hdrAction()">+ Add Customer</button>
+  </div>
+</div>
+
+<div class="nav">
+  <div class="ntab active" onclick="switchTab('loyalty',this)" id="nt-loyalty">🎫 Loyalty</div>
+  <div class="ntab" onclick="switchTab('dashboard',this)" id="nt-dashboard">📊 Dashboard</div>
+  <div class="ntab" onclick="switchTab('sales',this)" id="nt-sales">💰 Daily Sales</div>
+  <div class="ntab" onclick="switchTab('opcosts',this)" id="nt-opcosts">🧾 Op Costs</div>
+  <div class="ntab" onclick="switchTab('disb',this)" id="nt-disb">💸 Disbursements</div>
+  <div class="ntab" onclick="switchTab('txn',this)" id="nt-txn">🧾 Transactions</div>
+</div>
+
+<!-- ══ LOYALTY ══ -->
+<div class="tabp active" id="tab-loyalty">
+  <div class="sbar" id="SB"></div>
+  <div class="ctrl">
+    <input class="srch" placeholder="Search name or address…" id="SI" oninput="renderCards()">
+    <div class="ftabs">
+      <button class="ft active" onclick="setF('all',this)">All</button>
+      <button class="ft fa" onclick="setF('due',this)">🎁 Discount Due</button>
+      <button class="ft fb" onclick="setF('near',this)">⚡ 1 Away</button>
+      <button class="ft" onclick="setF('miss',this)">📍 Missing Addr</button>
+    </div>
+    <select class="ss" id="SS" onchange="renderCards()">
+      <option value="ms">Milestone First</option>
+      <option value="az">Name A–Z</option>
+      <option value="vd">Most Visits</option>
+      <option value="va">Fewest Visits</option>
+    </select>
+  </div>
+  <div class="pgc"><div class="cgrid" id="CG"></div></div>
+</div>
+
+<!-- ══ DASHBOARD ══ -->
+<div class="tabp" id="tab-dashboard">
+  <div class="dctrl"><h3>📊 Sales Dashboard</h3>
+    <div class="mtbar" id="DashBar"></div>
+  </div>
+  <div class="kstrip" id="KS"></div>
+  <div class="pgc" id="DB"></div>
+</div>
+
+<!-- ══ DAILY SALES ══ -->
+<div class="tabp" id="tab-sales">
+  <div class="ctrl">
+    <div class="mpick" id="SM" style="margin-bottom:0"></div>
+    <button class="btn btn-p" onclick="openSalesModal()">+ Add Day</button>
+  </div>
+  <div class="pgc">
+    <div class="card">
+      <div class="card-title">
+        <span id="SalesTitle">Daily Sales</span>
+        <span id="SalesMTD"></span>
+      </div>
+      <div style="overflow-x:auto">
+        <table class="tbl" id="SalesTable">
+          <thead><tr><th>Date</th><th style="text-align:right">Cash</th><th style="text-align:right">GCash</th><th style="text-align:right">Total</th><th>Notes</th><th style="width:80px"></th></tr></thead>
+          <tbody id="SalesTbody"></tbody>
+          <tfoot><tr class="tfoot"><td>MONTH TOTAL</td><td id="FtCash" style="text-align:right"></td><td id="FtGcash" style="text-align:right"></td><td id="FtTotal" style="text-align:right"></td><td colspan="2"></td></tr></tfoot>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ OP COSTS ══ -->
+<div class="tabp" id="tab-opcosts">
+  <div class="ctrl">
+    <div class="mpick" id="OM" style="margin-bottom:0"></div>
+    <button class="btn btn-p" onclick="openCostModal()">+ Add Item</button>
+  </div>
+  <div class="pgc">
+    <div class="card">
+      <div class="card-title"><span id="CostTitle">Operational Costs</span><span id="CostTotal"></span></div>
+      <div style="overflow-x:auto">
+        <table class="tbl" id="CostTable">
+          <thead><tr><th>Category / Item</th><th style="text-align:right">Amount</th><th>Remarks</th><th style="width:80px"></th></tr></thead>
+          <tbody id="CostTbody"></tbody>
+          <tfoot><tr class="tfoot"><td>TOTAL</td><td id="FCostTotal" style="text-align:right"></td><td colspan="2"></td></tr></tfoot>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ DISBURSEMENTS ══ -->
+<div class="tabp" id="tab-disb">
+  <div class="ctrl">
+    <div class="mpick" id="DM" style="margin-bottom:0"></div>
+    <button class="btn btn-p" onclick="openDisbModal()">+ Add Entry</button>
+  </div>
+  <div class="pgc">
+    <div class="card">
+      <div class="card-title"><span id="DisbTitle">Cash Disbursements</span><span id="DisbTotal"></span></div>
+      <div style="overflow-x:auto">
+        <table class="tbl" id="DisbTable">
+          <thead><tr><th>Date</th><th>Purpose / Item</th><th style="text-align:right">Amount</th><th>Remarks</th><th style="width:80px"></th></tr></thead>
+          <tbody id="DisbTbody"></tbody>
+          <tfoot><tr class="tfoot"><td colspan="2">TOTAL</td><td id="FDisbTotal" style="text-align:right"></td><td colspan="2"></td></tr></tfoot>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══ TRANSACTIONS ══ -->
+<div class="tabp" id="tab-txn">
+  <div class="ctrl">
+    <div class="mpick" id="TXM" style="margin-bottom:0"></div>
+    <button class="btn btn-p" onclick="openTxnModal(null)">+ Add Transaction</button>
+  </div>
+  <div class="pgc">
+    <div class="card" style="padding:0;overflow:hidden">
+      <div style="padding:14px 16px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--g200)">
+        <span id="TxnTitle" style="font-size:14px;font-weight:700;color:var(--g700)">Transactions</span>
+        <span id="TxnSummary" style="font-size:12px;color:var(--g500)"></span>
+      </div>
+      <div style="overflow-x:auto">
+        <table class="tbl" id="TxnTable">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Customer</th>
+              <th>Address</th>
+              <th style="text-align:center">Card#</th>
+              <th>Services</th>
+              <th style="text-align:right">Amount</th>
+              <th style="text-align:right">Promo</th>
+              <th style="text-align:right">Total</th>
+              <th>Payment</th>
+              <th>Delivery</th>
+              <th style="width:70px"></th>
+            </tr>
+          </thead>
+          <tbody id="TxnTbody"></tbody>
+          <tfoot>
+            <tr class="tfoot">
+              <td colspan="5">MONTH TOTAL</td>
+              <td id="FTxnAmt" style="text-align:right"></td>
+              <td id="FTxnPromo" style="text-align:right"></td>
+              <td id="FTxnTotal" style="text-align:right"></td>
+              <td colspan="3"></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODALS -->
+<div class="mov" id="MOV" style="display:none" onclick="if(event.target===this)closeModal()"><div class="modal" id="MBOX"></div></div>
+<div class="toast" id="TT"></div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════
+// DATA DEFAULTS
+// ═══════════════════════════════════════════════════════════════
+function gid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6)}
+const P=n=>`₱${(+n||0).toLocaleString('en-PH',{minimumFractionDigits:0,maximumFractionDigits:2})}`;
+const MONTH_NAMES=['January','February','March','April','May','June','July','August','September','October','November','December'];
+function mkToName(mk){const[y,m]=mk.split('-');return MONTH_NAMES[parseInt(m)-1]+' '+y;}
+function mkToShort(mk){const[y,m]=mk.split('-');return MONTH_NAMES[parseInt(m)-1].slice(0,3)+' '+y.slice(2);}
+function getMonths(){
+  const keys=new Set([...Object.keys(sales||{}),...Object.keys(costs||{}),...Object.keys(disbs||{})]);
+  return Array.from(keys).sort();
+}
+
+const DEFAULT_SALES={
+'2026-02':[
+  {id:'f01',day:6,cash:800,gcash:0,notes:''},
+  {id:'f02',day:7,cash:610,gcash:0,notes:''},
+  {id:'f03',day:8,cash:700,gcash:0,notes:''},
+  {id:'f04',day:9,cash:280,gcash:0,notes:''},
+  {id:'f05',day:11,cash:300,gcash:0,notes:''},
+  {id:'f06',day:12,cash:360,gcash:200,notes:''},
+  {id:'f07',day:13,cash:360,gcash:870,notes:''},
+  {id:'f08',day:14,cash:680,gcash:0,notes:''},
+  {id:'f09',day:15,cash:600,gcash:0,notes:'GCASH cash-out ₱1,330'},
+  {id:'f10',day:17,cash:370,gcash:0,notes:'GCASH cash-out ₱2,000'},
+  {id:'f11',day:18,cash:250,gcash:870,notes:'GCASH cash-out ₱3,300'},
+  {id:'f12',day:19,cash:440,gcash:0,notes:''},
+  {id:'f13',day:20,cash:180,gcash:0,notes:''},
+  {id:'f14',day:21,cash:370,gcash:0,notes:''},
+  {id:'f15',day:22,cash:180,gcash:360,notes:''},
+  {id:'f16',day:24,cash:250,gcash:0,notes:''},
+  {id:'f17',day:25,cash:0,gcash:215,notes:''},
+  {id:'f18',day:26,cash:190,gcash:0,notes:''},
+  {id:'f19',day:27,cash:790,gcash:0,notes:''},
+  {id:'f20',day:28,cash:585,gcash:725,notes:'Owner earnings ₱2,418'}
+],
+'2026-03':[
+  {id:'m01',day:1,cash:0,gcash:190,notes:''},
+  {id:'m02',day:2,cash:180,gcash:250,notes:''},
+  {id:'m03',day:4,cash:370,gcash:0,notes:''},
+  {id:'m04',day:5,cash:380,gcash:0,notes:''},
+  {id:'m05',day:6,cash:140,gcash:0,notes:''},
+  {id:'m06',day:7,cash:920,gcash:0,notes:''},
+  {id:'m07',day:8,cash:360,gcash:0,notes:''},
+  {id:'m08',day:9,cash:630,gcash:0,notes:''},
+  {id:'m09',day:10,cash:430,gcash:0,notes:''},
+  {id:'m10',day:11,cash:250,gcash:160,notes:''},
+  {id:'m11',day:12,cash:360,gcash:430,notes:''},
+  {id:'m12',day:13,cash:510,gcash:770,notes:''},
+  {id:'m13',day:14,cash:810,gcash:0,notes:''},
+  {id:'m14',day:15,cash:340,gcash:440,notes:''},
+  {id:'m15',day:16,cash:0,gcash:360,notes:'HC payment Mar'},
+  {id:'m16',day:17,cash:610,gcash:0,notes:''},
+  {id:'m17',day:18,cash:0,gcash:250,notes:''},
+  {id:'m18',day:19,cash:250,gcash:440,notes:''},
+  {id:'m19',day:20,cash:190,gcash:250,notes:''},
+  {id:'m20',day:21,cash:500,gcash:180,notes:''},
+  {id:'m21',day:22,cash:360,gcash:0,notes:''},
+  {id:'m22',day:24,cash:650,gcash:790,notes:''},
+  {id:'m23',day:25,cash:860,gcash:0,notes:''},
+  {id:'m24',day:26,cash:180,gcash:0,notes:''},
+  {id:'m25',day:27,cash:180,gcash:0,notes:''},
+  {id:'m26',day:28,cash:500,gcash:0,notes:''},
+  {id:'m27',day:29,cash:680,gcash:0,notes:''},
+  {id:'m28',day:30,cash:540,gcash:0,notes:''},
+  {id:'m29',day:31,cash:180,gcash:360,notes:''}
+],
+'2026-04':[
+  {id:'a01',day:1,cash:250,gcash:280,notes:''},
+  {id:'a02',day:2,cash:900,gcash:180,notes:''},
+  {id:'a03',day:3,cash:360,gcash:560,notes:''},
+  {id:'a04',day:4,cash:450,gcash:360,notes:''},
+  {id:'a05',day:5,cash:0,gcash:970,notes:''},
+  {id:'a06',day:6,cash:290,gcash:0,notes:''},
+  {id:'a07',day:7,cash:540,gcash:150,notes:''},
+  {id:'a08',day:8,cash:130,gcash:180,notes:''},
+  {id:'a09',day:9,cash:180,gcash:140,notes:''},
+  {id:'a10',day:10,cash:610,gcash:900,notes:''},
+  {id:'a11',day:11,cash:360,gcash:180,notes:''},
+  {id:'a12',day:12,cash:0,gcash:910,notes:''},
+  {id:'a13',day:13,cash:740,gcash:250,notes:''},
+  {id:'a14',day:14,cash:1380,gcash:0,notes:'Best day'},
+  {id:'a15',day:15,cash:430,gcash:0,notes:''},
+  {id:'a16',day:16,cash:510,gcash:180,notes:''},
+  {id:'a17',day:17,cash:80,gcash:0,notes:'Low day'},
+  {id:'a18',day:18,cash:360,gcash:690,notes:''},
+  {id:'a19',day:19,cash:0,gcash:1455,notes:''},
+  {id:'a20',day:20,cash:540,gcash:0,notes:'HC payment'},
+  {id:'a21',day:21,cash:860,gcash:0,notes:''},
+  {id:'a22',day:22,cash:560,gcash:0,notes:''},
+  {id:'a23',day:23,cash:500,gcash:0,notes:''},
+  {id:'a24',day:24,cash:930,gcash:0,notes:''},
+  {id:'a25',day:25,cash:830,gcash:0,notes:''},
+  {id:'a26',day:26,cash:1440,gcash:0,notes:''}
+]};
+
+const DEFAULT_COSTS={
+'2026-02':[
+  {id:'fc1',cat:'HC Equipment',amount:4772,remarks:'1/15 payment'},
+  {id:'fc2',cat:'Helper Pay',amount:4800,remarks:'Fully paid'},
+  {id:'fc3',cat:'Helper Cash Advance',amount:3150,remarks:'Feb 20'},
+  {id:'fc4',cat:'GCASH Cash-Out',amount:1330,remarks:'Feb 15'},
+  {id:'fc5',cat:'GCASH Cash-Out',amount:2000,remarks:'Feb 17 +3000'},
+  {id:'fc6',cat:'GCASH Cash-Out',amount:3300,remarks:'Feb 18 +5000'}
+],
+'2026-03':[
+  {id:'mc1',cat:'HC Equipment',amount:4772,remarks:'2/15 payment - Mar 16'},
+  {id:'mc2',cat:'Helper Pay',amount:3000,remarks:'Mar 30'},
+  {id:'mc3',cat:'Helper Cash Advance',amount:1800,remarks:'Mar 19'},
+  {id:'mc4',cat:'Sabon',amount:200,remarks:'Mar 8'},
+  {id:'mc5',cat:'Finishing Spray',amount:600,remarks:'Mar 9'},
+  {id:'mc6',cat:'Soap + Fabcon + Zonrox',amount:800,remarks:'Mar 14'},
+  {id:'mc7',cat:'Racking + Finishing Spray',amount:550,remarks:'Mar 14'},
+  {id:'mc8',cat:'Vinegar',amount:285,remarks:'Mar 18'},
+  {id:'mc9',cat:'Downy',amount:539,remarks:'Mar 21'},
+  {id:'mca',cat:'Finishing Spray',amount:250,remarks:'Mar 26'},
+  {id:'mcb',cat:'Finishing Spray',amount:471,remarks:'Mar 20'},
+  {id:'mcc',cat:'Gas',amount:200,remarks:'Mar 11'}
+],
+'2026-04':[
+  {id:'ac1',cat:'HC Equipment',amount:4772,remarks:'3/15 payment - Apr 20'},
+  {id:'ac2',cat:'Liquid Detergent',amount:467,remarks:'Apr 1'},
+  {id:'ac3',cat:'Fabric Conditioner',amount:467,remarks:'Apr 1'},
+  {id:'ac4',cat:'Plastic',amount:330,remarks:'Apr 2'},
+  {id:'ac5',cat:'Finishing Spray',amount:310,remarks:'Apr 2 - COMFY'},
+  {id:'ac6',cat:'Loyalty Cards',amount:60,remarks:'Apr 3'},
+  {id:'ac7',cat:'Zonrox',amount:75,remarks:'Apr 4'},
+  {id:'ac8',cat:'Zonrox',amount:264,remarks:'Apr 9'},
+  {id:'ac9',cat:'Fabric Conditioner',amount:610,remarks:'Apr 9'},
+  {id:'aca',cat:'Liquid Detergent',amount:45.70,remarks:'Apr 9'},
+  {id:'acb',cat:'Finishing Spray',amount:305,remarks:'Apr 9 - DOLLY'},
+  {id:'acc',cat:'Finishing Spray',amount:310,remarks:'Apr 15 - DOLLY'},
+  {id:'acd',cat:'Helper Cash Advance',amount:500,remarks:'Apr 17'},
+  {id:'ace',cat:'Liquid Detergent',amount:357,remarks:'Apr 18'},
+  {id:'acf',cat:'Liquid Detergent',amount:333,remarks:'Apr 22'},
+  {id:'acg',cat:'Fabric Conditioner',amount:452,remarks:'Apr 22'},
+  {id:'ach',cat:'Plastic',amount:180,remarks:'Apr 23'},
+  {id:'aci',cat:'Finishing Spray',amount:310,remarks:'Apr 25 - DOLLY'},
+  {id:'acj',cat:'Finishing Spray',amount:478,remarks:'Apr 25 - TROPICAL DREAMS'}
+]};
+
+const DEFAULT_DISB={
+'2026-02':[
+  {id:'fd1',date:'2026-02-15',item:'GCASH Cash-Out',amount:1330,remarks:'Customer #0947145931'},
+  {id:'fd2',date:'2026-02-17',item:'GCASH Cash-Out',amount:2000,remarks:'Customer #0999163662'},
+  {id:'fd3',date:'2026-02-18',item:'GCASH Cash-Out',amount:3300,remarks:'Customer #0950897615'},
+  {id:'fd4',date:'2026-02-19',item:'HC Equipment',amount:4772,remarks:'1/15 installment'},
+  {id:'fd5',date:'2026-02-19',item:'Helper Cash Advance',amount:3150,remarks:''},
+  {id:'fd6',date:'2026-02-26',item:'Helper Pay (Full)',amount:1650,remarks:'Fully paid'},
+  {id:'fd7',date:'2026-02-28',item:'Volleyball Solicit',amount:100,remarks:'Paseo team'},
+  {id:'fd8',date:'2026-02-28',item:'Owner Earnings',amount:2418,remarks:''}
+],
+'2026-03':[
+  {id:'md1',date:'2026-03-08',item:'Sabon',amount:200,remarks:''},
+  {id:'md2',date:'2026-03-09',item:'Finishing Spray',amount:600,remarks:''},
+  {id:'md3',date:'2026-03-11',item:'Soap + Fabcon',amount:318.10,remarks:''},
+  {id:'md4',date:'2026-03-11',item:'Gas',amount:200,remarks:''},
+  {id:'md5',date:'2026-03-14',item:'Soap + Fabcon + Zonrox',amount:800,remarks:''},
+  {id:'md6',date:'2026-03-14',item:'Racking + Finishing Spray',amount:550,remarks:''},
+  {id:'md7',date:'2026-03-16',item:'HC Equipment',amount:4772,remarks:'2/15 payment'},
+  {id:'md8',date:'2026-03-18',item:'Vinegar',amount:285,remarks:''},
+  {id:'md9',date:'2026-03-19',item:'Helper Cash Advance',amount:1800,remarks:''},
+  {id:'mda',date:'2026-03-19',item:'Finishing Spray',amount:100,remarks:''},
+  {id:'mdb',date:'2026-03-20',item:'Finishing Spray',amount:471,remarks:''},
+  {id:'mdc',date:'2026-03-21',item:'Downy',amount:539,remarks:''},
+  {id:'mdd',date:'2026-03-26',item:'Finishing Spray',amount:250,remarks:''},
+  {id:'mde',date:'2026-03-30',item:'Helper Pay',amount:3000,remarks:''},
+  {id:'mdf',date:'2026-03-30',item:'Load (Blessie)',amount:50,remarks:''}
+],
+'2026-04':[
+  {id:'ad1',date:'2026-04-01',item:'Liquid Detergent',amount:467,remarks:''},
+  {id:'ad2',date:'2026-04-01',item:'Fabric Conditioner',amount:467,remarks:''},
+  {id:'ad3',date:'2026-04-02',item:'Plastic',amount:330,remarks:''},
+  {id:'ad4',date:'2026-04-02',item:'Finishing Spray',amount:310,remarks:'COMFY'},
+  {id:'ad5',date:'2026-04-03',item:'Loyalty Cards',amount:60,remarks:''},
+  {id:'ad6',date:'2026-04-04',item:'Zonrox',amount:75,remarks:''},
+  {id:'ad7',date:'2026-04-09',item:'Zonrox',amount:264,remarks:''},
+  {id:'ad8',date:'2026-04-09',item:'Fabric Conditioner',amount:610,remarks:''},
+  {id:'ad9',date:'2026-04-09',item:'Liquid Detergent',amount:45.70,remarks:''},
+  {id:'ada',date:'2026-04-09',item:'Finishing Spray',amount:305,remarks:'DOLLY'},
+  {id:'adb',date:'2026-04-15',item:'Finishing Spray',amount:310,remarks:'DOLLY'},
+  {id:'adc',date:'2026-04-17',item:'Helper Cash Advance',amount:500,remarks:''},
+  {id:'add',date:'2026-04-18',item:'Liquid Detergent',amount:357,remarks:''},
+  {id:'ade',date:'2026-04-20',item:'HC Equipment',amount:4772,remarks:'3/15 Equipment payment'},
+  {id:'adf',date:'2026-04-22',item:'Liquid Detergent',amount:333,remarks:''},
+  {id:'adg',date:'2026-04-22',item:'Fabric Conditioner',amount:452,remarks:''},
+  {id:'adh',date:'2026-04-23',item:'Roll Bag',amount:180,remarks:''},
+  {id:'adi',date:'2026-04-25',item:'Finishing Spray',amount:310,remarks:'DOLLY'},
+  {id:'adj',date:'2026-04-25',item:'Finishing Spray',amount:478,remarks:'TROPICAL DREAMS'}
+]};
+
+const DEFAULT_CUSTS=[
+  {name:'Aeriel Ortega',addr:'Blk 12 Lot 33 Ph2',visits:13},
+  {name:'Jai Lizano',addr:'Blk 8 Lot 5 Phase 2',visits:19},
+  {name:'Joan Loreine Flores',addr:'Paseo Village',visits:5},
+  {name:'Cieling',addr:'Blk 8 Lot 5 Phase 2',visits:7},
+  {name:'Jess Lizano',addr:'Blk 5 Lot 26 Phase 1',visits:6},
+  {name:'Kuya Gerry',addr:'',visits:8},
+  {name:'Jec Delos Reyes',addr:'Blk 4 Lot 7 Ph2',visits:7},
+  {name:'Nadia',addr:'',visits:11},
+  {name:'Emie Peres',addr:'Blk 14 Lt 14 Ph1',visits:7},
+  {name:'El Eigh Fslc',addr:'',visits:8},
+  {name:'Liyah Garcia',addr:'',visits:6},
+  {name:'Tindahan Phase 2',addr:'Phase 2',visits:5},
+  {name:'Yana',addr:'Blk 12 Lot 16 Phase 2',visits:5},
+  {name:'Catherine',addr:'',visits:5},
+  {name:'Joan Allan Delos Reyes',addr:'',visits:3},
+  {name:'Kyla Lee',addr:'',visits:3},
+  {name:'Mary Ann',addr:'Block 9 Lot 21 Ph1',visits:3},
+  {name:'VON',addr:'Blk 8 Lot 43 Phase 2',visits:3},
+  {name:'Olga Deguzman',addr:'B5 L29 P1',visits:3},
+  {name:'Alra Marie Santillan',addr:'Block 10 Lot 26 Phase 2',visits:3},
+  {name:'Mona Deado',addr:'Blk 11 Lot 19 Ph1',visits:4},
+  {name:'Lenard Dela Cruz',addr:'',visits:4},
+  {name:'TESS',addr:'Blk 8 Lot 25 Ph2',visits:4},
+  {name:'Janel Brasileno',addr:'Capihan',visits:2},
+  {name:'Joyce',addr:'Paseo Village',visits:2},
+  {name:'Jackie Pool',addr:'',visits:2},
+  {name:'Phase 2 Kapitbahay',addr:'Phase 2',visits:2},
+  {name:'Naneth Pineda',addr:'Phase 1 Blk 13 Lot 16',visits:2},
+  {name:'Ate Neth',addr:'',visits:2},
+  {name:'Joana Quintana',addr:'',visits:2},
+  {name:'Camille',addr:'Phase 1',visits:2},
+  {name:'Carl Angelo Inovero',addr:'Blk 15 Lot 10 Phase 2',visits:2},
+  {name:'Riza Tablan',addr:'Blk 13 Lot 15 Ph2',visits:1},
+  {name:'Leah Saren',addr:'Phase 2',visits:1},
+  {name:'Violet Gate',addr:'Phase 2',visits:1},
+  {name:'Aira Dominique',addr:'Blk 11 Lot 25 Phase 2',visits:1},
+  {name:'Nelle Jorda',addr:'',visits:1},
+  {name:'Dollar Jopillo-Santillana',addr:'Blk 13 Lot 26 Ph2',visits:1},
+  {name:'Jonathan',addr:'',visits:1},{name:'JAYR',addr:'',visits:1},
+  {name:'Francis',addr:'Phase 2 Block 8',visits:1},
+  {name:'MJ Niares',addr:'Blk 6 Lot 6 Phase 2',visits:1},
+  {name:'Jerby',addr:'',visits:1},{name:'Pearly Mari',addr:'',visits:1},
+  {name:'Marian Salvador',addr:'',visits:1},{name:'Felagman',addr:'B14 L4 Ph1',visits:1},
+  {name:'Mineral Delivery Guy',addr:'',visits:1}
+];
+
+// ═══════════════════════════════════════════════════════════════
+// STATE & STORAGE
+// ═══════════════════════════════════════════════════════════════
+let sales,costs,disbs,custs;
+let curTab='loyalty', curSM='', curOM='', curDM='', curDash='latest', AF='all', editId=null, modalMode='';
+
+
+// ═══════════════════════════════════════════════════════════════
+// SERVICES LIST
+// ═══════════════════════════════════════════════════════════════
+const SERVICES=[
+  {cat:'Normal Clothes',items:[
+    {id:'s01',name:'7kg Regular Combo',price:180},
+    {id:'s02',name:'10kg Regular Combo',price:250},
+    {id:'s03',name:'7kg Regular WDF (own soap & fabcon)',price:140},
+    {id:'s04',name:'10kg Regular WDF (own soap & fabcon)',price:210},
+    {id:'s05',name:'7kg Regular Wash Only',price:60},
+    {id:'s06',name:'10kg Regular Wash Only',price:80},
+    {id:'s07',name:'7kg Regular Dry Only',price:70},
+    {id:'s08',name:'10kg Regular Dry Only',price:90},
+  ]},
+  {cat:'Comforter & Stuff Toys',items:[
+    {id:'s09',name:'3kg Comforter/Stuff Toys Combo',price:180},
+    {id:'s10',name:'5kg Comforter/Stuff Toys Combo',price:250},
+    {id:'s11',name:'3kg Comforter/Stuff Toys WDF (own soap & fabcon)',price:140},
+    {id:'s12',name:'5kg Comforter/Stuff Toys WDF (own soap & fabcon)',price:210},
+    {id:'s13',name:'3kg Comforter/Stuff Toys Wash Only',price:60},
+    {id:'s14',name:'5kg Comforter/Stuff Toys Wash Only',price:80},
+    {id:'s15',name:'3kg Comforter/Stuff Toys Dry Only',price:70},
+    {id:'s16',name:'5kg Comforter/Stuff Toys Dry Only',price:90},
+  ]},
+  {cat:'Blankets / Bed Sheets / Towels / Jeans / Jackets',items:[
+    {id:'s17',name:'5kg Blankets/Bedsheets/Towels/Jeans/Jackets Combo',price:180},
+    {id:'s18',name:'8kg Blankets/Bedsheets/Towels/Jeans/Jackets Combo',price:250},
+    {id:'s19',name:'5kg Blankets/Bedsheets/Towels/Jeans/Jackets WDF (own soap & fabcon)',price:140},
+    {id:'s20',name:'8kg Blankets/Bedsheets/Towels/Jeans/Jackets WDF (own soap & fabcon)',price:210},
+    {id:'s21',name:'5kg Blankets/Bedsheets/Towels/Jeans/Jackets Wash Only',price:60},
+    {id:'s22',name:'8kg Blankets/Bedsheets/Towels/Jeans/Jackets Wash Only',price:80},
+    {id:'s23',name:'5kg Blankets/Bedsheets/Towels/Jeans/Jackets Dry Only',price:70},
+    {id:'s24',name:'8kg Blankets/Bedsheets/Towels/Jeans/Jackets Dry Only',price:90},
+  ]},
+  {cat:'Add-ons',items:[
+    {id:'s25',name:'Liquid Detergent',price:20},
+    {id:'s26',name:'Fabric Conditioner',price:10},
+    {id:'s27',name:'Zonrox Colorsafe',price:15},
+    {id:'s28',name:'Pre-wash',price:20},
+    {id:'s29',name:'Delivery Fee',price:0},
+    {id:'s30',name:'Pick-up Fee',price:0},
+  ]}
+];
+const SVC_MAP={};
+SERVICES.forEach(g=>g.items.forEach(s=>SVC_MAP[s.id]=s));
+
+function svcOptions(selId=''){
+  return SERVICES.map(g=>`<optgroup label="${g.cat}">`+g.items.map(s=>`<option value="${s.id}" data-price="${s.price}" ${s.id===selId?'selected':''}>${s.name} — ₱${s.price}</option>`).join('')+'</optgroup>').join('');
+}
+
+// ═══════════════════════════════════════════════════════════════
+// TRANSACTION DATA
+// ═══════════════════════════════════════════════════════════════
+let txns={};
+
+function loadTxns(){
+  txns=JSON.parse(localStorage.getItem('cly_txns')||'null')||{};
+}
+function saveTxns(){localStorage.setItem('cly_txns',JSON.stringify(txns));}
+
+// ═══════════════════════════════════════════════════════════════
+// RENDER TRANSACTIONS
+// ═══════════════════════════════════════════════════════════════
+let curTXM='';
+function renderTxns(){
+  const ms=getMonths().concat(Object.keys(txns)).filter((v,i,a)=>a.indexOf(v)===i).sort();
+  const latestM=ms[ms.length-1]||'2026-04';
+  if(!curTXM||!ms.includes(curTXM))curTXM=latestM;
+
+  // Build month picker
+  const c=document.getElementById('TXM');
+  if(c)c.innerHTML=ms.map(m=>`<button class="mp ${m===curTXM?'active':''}" onclick="curTXM='${m}';renderTxns()">${mkToShort(m)}</button>`).join('')
+    +`<button class="mp" style="background:var(--tl);color:var(--td);border-color:var(--tm)" onclick="openAddMonthModal()">+ Month</button>`;
+
+  const data=((txns[curTXM]||[]).slice()).sort((a,b)=>a.date.localeCompare(b.date));
+  document.getElementById('TxnTitle').textContent=`Transactions — ${mkToName(curTXM)}`;
+
+  let totAmt=0,totPromo=0,totTotal=0;
+  const rows=data.map(tx=>{
+    const svcHtml=tx.items.map(it=>{
+      const svc=SVC_MAP[it.svcId];
+      const nm=svc?svc.name:it.customName||'Custom';
+      return`<div style="font-size:11px;line-height:1.6"><span style="font-weight:600">${it.qty>1?it.qty+'×':''}</span> ${nm} <span style="color:var(--g400)">₱${(it.unitPrice*it.qty).toLocaleString()}</span></div>`;
+    }).join('');
+    const gross=tx.items.reduce((s,it)=>s+it.unitPrice*it.qty,0);
+    const promo=tx.promo||0;
+    const total=gross-promo;
+    totAmt+=gross;totPromo+=promo;totTotal+=total;
+    const pmPill=tx.payment==='GCash'?'pill-g':'pill-c';
+    const dlPill=tx.delivery==='DELIVER'?'pill-del':'pill-pik';
+    const d=new Date(tx.date+'T00:00:00');
+    const dl=d.toLocaleDateString('en-PH',{month:'short',day:'numeric'});
+    return`<tr>
+      <td style="white-space:nowrap"><strong>${dl}</strong></td>
+      <td style="font-weight:600">${tx.custName}</td>
+      <td style="font-size:12px;color:var(--g500)">${tx.custAddr||'—'}</td>
+      <td style="text-align:center"><span class="cbdg">Card ${tx.cardNo||'—'}</span></td>
+      <td>${svcHtml}</td>
+      <td style="text-align:right;font-weight:600">${P(gross)}</td>
+      <td style="text-align:right;color:var(--co)">${promo?'-'+P(promo):''}</td>
+      <td style="text-align:right;font-weight:700;color:var(--td)">${P(total)}</td>
+      <td><span class="pill ${pmPill}">${tx.payment}</span></td>
+      <td><span class="pill ${dlPill}">${tx.delivery}</span></td>
+      <td style="display:flex;gap:3px">
+        <button class="btn btn-s btn-sm" onclick="openTxnModal('${tx.id}')">✏️</button>
+        <button class="btn btn-d btn-sm" onclick="delTxn('${tx.id}')">✕</button>
+      </td>
+    </tr>`;
+  }).join('')||`<tr><td colspan="11" style="text-align:center;padding:24px;color:var(--g400)">No transactions yet — click + Add Transaction</td></tr>`;
+
+  document.getElementById('TxnTbody').innerHTML=rows;
+  document.getElementById('FTxnAmt').textContent=P(totAmt);
+  document.getElementById('FTxnPromo').textContent=totPromo?'-'+P(totPromo):'';
+  document.getElementById('FTxnTotal').textContent=P(totTotal);
+  document.getElementById('TxnSummary').textContent=`${data.length} transactions · Total: ${P(totTotal)}`;
+}
+
+function delTxn(id){
+  if(!confirm('Delete this transaction?'))return;
+  for(const m of Object.keys(txns))txns[m]=(txns[m]||[]).filter(r=>r.id!==id);
+  saveTxns();renderTxns();toast('Transaction deleted','tr');
+}
+
+// ═══════════════════════════════════════════════════════════════
+// TRANSACTION MODAL
+// ═══════════════════════════════════════════════════════════════
+let txnLines=[];
+
+function openTxnModal(id){
+  modalMode='txn';editId=id;
+  let tx=null;
+  if(id){for(const m of Object.keys(txns)){tx=(txns[m]||[]).find(r=>r.id===id);if(tx)break;}}
+  txnLines=tx?JSON.parse(JSON.stringify(tx.items)):[{svcId:'s01',qty:1,unitPrice:180,customName:''}];
+  const today=new Date().toISOString().slice(0,10);
+
+  // Customer options from loyalty list
+  const custOpts=`<option value="">— Type name or select —</option>`+custs.map(c=>`<option value="${c.id}" data-addr="${c.addr||''}" data-visits="${c.visits}" data-card="${Math.ceil(c.visits/15)||1}">${c.name}${c.addr?' — '+c.addr:''}</option>`).join('');
+
+  document.getElementById('MBOX').innerHTML=`
+    <h3>${tx?'Edit Transaction':'New Transaction'}</h3>
+    <div class="mgrid">
+      <div class="fg ff"><label>Date *</label><input type="date" id="txDate" value="${tx?.date||today}"></div>
+      <div class="fg ff">
+        <label>Customer *</label>
+        <select id="txCust" onchange="txFillCust(this)">
+          ${custOpts}
+        </select>
+      </div>
+      <div class="fg">
+        <label>Customer Name (if not in list)</label>
+        <input id="txName" placeholder="e.g. New Customer" value="${tx?.custName||''}">
+      </div>
+      <div class="fg">
+        <label>📍 Address</label>
+        <input id="txAddr" placeholder="Blk/Lot/Phase" value="${tx?.custAddr||''}">
+      </div>
+      <div class="fg">
+        <label>Card #</label>
+        <input id="txCard" placeholder="e.g. 1" value="${tx?.cardNo||''}" type="number" min="1">
+      </div>
+      <div class="fg">
+        <label>Promo / Discount (₱)</label>
+        <input type="number" id="txPromo" value="${tx?.promo||0}" min="0" oninput="txCalcTotal()">
+      </div>
+    </div>
+    <div style="margin-top:14px">
+      <div class="svc-hdr">
+        <span>Service</span><span>Qty</span><span>Unit ₱</span><span>Subtotal</span><span></span>
+      </div>
+      <div id="txLines"></div>
+      <button class="add-svc-btn" onclick="txAddLine()">+ Add Another Service</button>
+    </div>
+    <div class="total-row"><span>TOTAL</span><span id="txTotal" style="color:var(--teal);font-size:18px">₱0</span></div>
+    <div class="mgrid" style="margin-top:12px">
+      <div class="fg">
+        <label>Payment Method</label>
+        <select id="txPay">
+          <option value="CASH" ${tx?.payment==='CASH'?'selected':''}>CASH</option>
+          <option value="GCash" ${tx?.payment==='GCash'?'selected':''}>GCash</option>
+        </select>
+      </div>
+      <div class="fg">
+        <label>Delivery Type</label>
+        <select id="txDel">
+          <option value="DELIVER" ${tx?.delivery==='DELIVER'?'selected':''}>DELIVER</option>
+          <option value="PICK-UP" ${tx?.delivery==='PICK-UP'?'selected':''}>PICK-UP</option>
+        </select>
+      </div>
+    </div>
+    <div class="stamp-note" id="txStampNote">⭐ A loyalty stamp will be added for this customer when saved.</div>
+    <div class="macts">
+      <button class="bc" onclick="closeModal()">Cancel</button>
+      <button class="bp" onclick="saveTxn()">Save Transaction</button>
+    </div>`;
+
+  document.getElementById('MOV').style.display='flex';
+  // Pre-select customer if editing
+  if(tx?.custId){
+    const sel=document.getElementById('txCust');
+    if(sel)sel.value=tx.custId;
+  }
+  txRenderLines();
+  txCalcTotal();
+  txCheckStamp();
+}
+
+function txFillCust(sel){
+  const opt=sel.options[sel.selectedIndex];
+  if(!opt||!opt.value)return;
+  document.getElementById('txName').value=opt.text.split(' — ')[0];
+  document.getElementById('txAddr').value=opt.dataset.addr||'';
+  const visits=parseInt(opt.dataset.visits||0);
+  document.getElementById('txCard').value=Math.ceil((visits+1)/15)||1;
+  txCheckStamp();
+}
+
+function txCheckStamp(){
+  const note=document.getElementById('txStampNote');
+  if(!note)return;
+  const hasCust=document.getElementById('txCust')?.value;
+  note.style.display=hasCust?'block':'none';
+}
+
+function txRenderLines(){
+  document.getElementById('txLines').innerHTML=txnLines.map((line,i)=>`
+    <div class="svc-line" id="tl-${i}">
+      <select onchange="txLineChange(${i},this)">
+        <option value="">— Select service —</option>
+        ${svcOptions(line.svcId)}
+      </select>
+      <input type="number" min="1" value="${line.qty||1}" oninput="txLineQty(${i},this)" style="text-align:center">
+      <input type="number" value="${line.unitPrice||0}" oninput="txLinePrice(${i},this)" style="text-align:right" placeholder="₱">
+      <input type="number" value="${(line.unitPrice||0)*(line.qty||1)}" readonly style="background:var(--g50);text-align:right;color:var(--g700)">
+      <button onclick="txRemoveLine(${i})" style="background:#FEE2E2;color:#DC2626;border:none;border-radius:6px;cursor:pointer;font-size:14px;padding:0 6px;height:32px" ${txnLines.length===1?'disabled':''}>✕</button>
+    </div>`).join('');
+  txCalcTotal();
+}
+
+function txLineChange(i,sel){
+  const svc=SVC_MAP[sel.value];
+  txnLines[i].svcId=sel.value;
+  txnLines[i].unitPrice=svc?svc.price:0;
+  txnLines[i].customName='';
+  txRenderLines();
+}
+function txLineQty(i,inp){txnLines[i].qty=Math.max(1,parseInt(inp.value)||1);const sub=document.querySelector(`#tl-${i} input:nth-child(4)`);if(sub)sub.value=(txnLines[i].unitPrice||0)*txnLines[i].qty;txCalcTotal();}
+function txLinePrice(i,inp){txnLines[i].unitPrice=parseFloat(inp.value)||0;const sub=document.querySelector(`#tl-${i} input:nth-child(4)`);if(sub)sub.value=(txnLines[i].unitPrice||0)*(txnLines[i].qty||1);txCalcTotal();}
+function txAddLine(){txnLines.push({svcId:'',qty:1,unitPrice:0,customName:''});txRenderLines();}
+function txRemoveLine(i){if(txnLines.length===1)return;txnLines.splice(i,1);txRenderLines();}
+function txCalcTotal(){
+  const gross=txnLines.reduce((s,l)=>s+(l.unitPrice||0)*(l.qty||1),0);
+  const promo=parseFloat(document.getElementById('txPromo')?.value)||0;
+  const el=document.getElementById('txTotal');
+  if(el)el.textContent=P(Math.max(0,gross-promo));
+}
+
+function saveTxn(){
+  const date=document.getElementById('txDate').value;
+  const custId=document.getElementById('txCust').value;
+  const custName=document.getElementById('txName').value.trim();
+  const custAddr=document.getElementById('txAddr').value.trim();
+  const cardNo=parseInt(document.getElementById('txCard').value)||1;
+  const promo=parseFloat(document.getElementById('txPromo').value)||0;
+  const payment=document.getElementById('txPay').value;
+  const delivery=document.getElementById('txDel').value;
+
+  if(!date){alert('Please set a date.');return;}
+  if(!custName){alert('Please enter a customer name.');return;}
+  if(!txnLines.length||txnLines.every(l=>!l.svcId&&!l.customName)){alert('Please add at least one service.');return;}
+
+  const d=new Date(date+'T00:00:00');
+  const mk=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+  if(!txns[mk])txns[mk]=[];
+
+  const record={id:editId||gid(),date,custId,custName,custAddr,cardNo,items:JSON.parse(JSON.stringify(txnLines)),promo,payment,delivery};
+
+  if(editId){
+    for(const m of Object.keys(txns)){const idx=(txns[m]||[]).findIndex(r=>r.id===editId);if(idx>-1){txns[m][idx]=record;break;}}
+  } else {
+    txns[mk].push(record);
+    // Auto-stamp loyalty card if customer found in list
+    if(custId){
+      const c=custs.find(x=>x.id===custId);
+      if(c){
+        c.visits++;
+        if(!c.log)c.log=[];
+        const i2=msI(c.visits);
+        const ds=new Date().toLocaleDateString('en-PH',{month:'short',day:'numeric',year:'numeric'});
+        c.log.push({v:c.visits,ts:Date.now(),date:ds,ms:i2.isDue});
+        if(i2.isDue){const p=c.visits%15===0?15:c.visits%15;toast(`🎉 ${c.name} — ${p===5?'5th':p===10?'10th':'15th'} visit DISCOUNT DUE!`,'t'+i2.mtype);}
+      }
+    }
+  }
+  saveTxns();saveAll();closeModal();curTXM=mk;renderTxns();
+  if(!editId)toast(`✅ Transaction saved${custId?' + loyalty stamp added':''}!`,'tt');
+  else toast('✅ Transaction updated','tt');
+}
+
+function loadAll(){
+  sales = JSON.parse(localStorage.getItem('cly_sales')||'null') || JSON.parse(JSON.stringify(DEFAULT_SALES));
+  costs = JSON.parse(localStorage.getItem('cly_costs')||'null') || JSON.parse(JSON.stringify(DEFAULT_COSTS));
+  disbs = JSON.parse(localStorage.getItem('cly_disbs')||'null') || JSON.parse(JSON.stringify(DEFAULT_DISB));
+  loadTxns();
+  const sc = localStorage.getItem('cly_custs');
+  if(sc){custs=JSON.parse(sc);}
+  else{const seen=new Set();custs=DEFAULT_CUSTS.filter(x=>{if(seen.has(x.name))return false;seen.add(x.name);return true;}).map(x=>({id:gid(),name:x.name,addr:x.addr||'',phone:'',visits:x.visits,log:[]}));}
+  saveAll();
+}
+function saveAll(){
+  localStorage.setItem('cly_sales',JSON.stringify(sales));
+  localStorage.setItem('cly_costs',JSON.stringify(costs));
+  localStorage.setItem('cly_disbs',JSON.stringify(disbs));
+  localStorage.setItem('cly_custs',JSON.stringify(custs));
+  saveTxns();
+}
+
+// ═══════════════════════════════════════════════════════════════
+// TAB SWITCHING
+// ═══════════════════════════════════════════════════════════════
+function switchTab(name,el){
+  document.querySelectorAll('.tabp').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.ntab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  el.classList.add('active');
+  curTab=name;
+  const hb=document.getElementById('hdrBtn');
+  if(name==='loyalty'){hb.textContent='+ Add Customer';hb.style.display='';}
+  else{hb.style.display='none';}
+  if(name==='loyalty')renderCards();
+  if(name==='dashboard')renderDash();
+  if(name==='sales')renderSales();
+  if(name==='opcosts')renderCosts();
+  if(name==='disb')renderDisbs();
+  if(name==='txn')renderTxns();
+}
+function hdrAction(){openModal('cust',null);}
+
+// ═══════════════════════════════════════════════════════════════
+// MONTH PICKERS (reusable)
+// ═══════════════════════════════════════════════════════════════
+function buildMonthPicker(containerId, currentVal, onchange){
+  const c=document.getElementById(containerId);
+  const ms=getMonths();
+  c.innerHTML=ms.map(m=>`<button class="mp ${m===currentVal?'active':''}" onclick="(${onchange.toString()})('${m}',this)">${mkToShort(m)}</button>`).join('')
+    +`<button class="mp" style="background:var(--tl);color:var(--td);border-color:var(--tm)" onclick="openAddMonthModal()">+ Month</button>`;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// DAILY SALES TAB
+// ═══════════════════════════════════════════════════════════════
+function renderSales(){
+  buildMonthPicker('SM', curSM, (m,btn)=>{curSM=m;document.querySelectorAll('#SM .mp').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderSales();});
+  const data=(sales[curSM]||[]).slice().sort((a,b)=>a.day-b.day);
+  document.getElementById('SalesTitle').textContent=`Daily Sales — ${mkToName(curSM)}`;
+  let tc=0,tg=0;
+  document.getElementById('SalesTbody').innerHTML=data.map(r=>{
+    const tot=(r.cash||0)+(r.gcash||0);tc+=r.cash||0;tg+=r.gcash||0;
+    const dayLabel=`${mkToShort(curSM)} ${r.day}`;
+    return`<tr>
+      <td><strong>${dayLabel}</strong></td>
+      <td style="text-align:right"><span class="pill pill-c">${P(r.cash)}</span></td>
+      <td style="text-align:right"><span class="pill pill-g">${P(r.gcash)}</span></td>
+      <td style="text-align:right;font-weight:700">${P(tot)}</td>
+      <td style="color:var(--g400);font-size:12px">${r.notes||''}</td>
+      <td style="display:flex;gap:4px">
+        <button class="btn btn-s btn-sm" onclick="openModal('sales','${r.id}')">✏️</button>
+        <button class="btn btn-d btn-sm" onclick="delSales('${r.id}')">✕</button>
+      </td>
+    </tr>`;
+  }).join('')||`<tr><td colspan="6" style="text-align:center;padding:20px;color:var(--g400)">No entries yet — click + Add Day</td></tr>`;
+  document.getElementById('FtCash').textContent=P(tc);
+  document.getElementById('FtGcash').textContent=P(tg);
+  document.getElementById('FtTotal').textContent=P(tc+tg);
+  document.getElementById('SalesMTD').textContent=`MTD: ${P(tc+tg)}`;
+}
+function delSales(id){
+  if(!confirm('Delete this sales entry?'))return;
+  for(const m of months)sales[m]=( sales[m]||[]).filter(r=>r.id!==id);
+  saveAll();renderSales();toast('Entry deleted','tr');
+}
+function openSalesModal(id){openModal('sales',id||null);}
+
+// ═══════════════════════════════════════════════════════════════
+// OP COSTS TAB
+// ═══════════════════════════════════════════════════════════════
+function renderCosts(){
+  buildMonthPicker('OM', curOM, (m,btn)=>{curOM=m;document.querySelectorAll('#OM .mp').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderCosts();});
+  const data=(costs[curOM]||[]);
+  let tot=0;
+  document.getElementById('CostTitle').textContent=`Operational Costs — ${mkToName(curOM)}`;
+  document.getElementById('CostTbody').innerHTML=data.map(r=>{
+    tot+=r.amount||0;
+    return`<tr>
+      <td><strong>${r.cat}</strong></td>
+      <td style="text-align:right;font-weight:700">${P(r.amount)}</td>
+      <td style="color:var(--g400);font-size:12px">${r.remarks||''}</td>
+      <td style="display:flex;gap:4px">
+        <button class="btn btn-s btn-sm" onclick="openModal('cost','${r.id}')">✏️</button>
+        <button class="btn btn-d btn-sm" onclick="delCost('${r.id}')">✕</button>
+      </td>
+    </tr>`;
+  }).join('')||`<tr><td colspan="4" style="text-align:center;padding:20px;color:var(--g400)">No entries yet — click + Add Item</td></tr>`;
+  document.getElementById('FCostTotal').textContent=P(tot);
+  document.getElementById('CostTotal').textContent=`Total: ${P(tot)}`;
+}
+function delCost(id){
+  if(!confirm('Delete this expense?'))return;
+  for(const m of months)costs[m]=(costs[m]||[]).filter(r=>r.id!==id);
+  saveAll();renderCosts();toast('Expense deleted','tr');
+}
+function openCostModal(id){openModal('cost',id||null);}
+
+// ═══════════════════════════════════════════════════════════════
+// DISBURSEMENTS TAB
+// ═══════════════════════════════════════════════════════════════
+function renderDisbs(){
+  buildMonthPicker('DM', curDM, (m,btn)=>{curDM=m;document.querySelectorAll('#DM .mp').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderDisbs();});
+  const data=(disbs[curDM]||[]).slice().sort((a,b)=>a.date.localeCompare(b.date));
+  let tot=0;
+  document.getElementById('DisbTitle').textContent=`Cash Disbursements — ${mkToName(curDM)}`;
+  document.getElementById('DisbTbody').innerHTML=data.map(r=>{
+    tot+=r.amount||0;
+    const d=new Date(r.date+'T00:00:00');
+    const dl=d.toLocaleDateString('en-PH',{month:'short',day:'numeric'});
+    return`<tr>
+      <td><strong>${dl}</strong></td>
+      <td>${r.item}</td>
+      <td style="text-align:right;font-weight:700">${P(r.amount)}</td>
+      <td style="color:var(--g400);font-size:12px">${r.remarks||''}</td>
+      <td style="display:flex;gap:4px">
+        <button class="btn btn-s btn-sm" onclick="openModal('disb','${r.id}')">✏️</button>
+        <button class="btn btn-d btn-sm" onclick="delDisb('${r.id}')">✕</button>
+      </td>
+    </tr>`;
+  }).join('')||`<tr><td colspan="5" style="text-align:center;padding:20px;color:var(--g400)">No entries yet — click + Add Entry</td></tr>`;
+  document.getElementById('FDisbTotal').textContent=P(tot);
+  document.getElementById('DisbTotal').textContent=`Total: ${P(tot)}`;
+}
+function delDisb(id){
+  if(!confirm('Delete this disbursement?'))return;
+  for(const m of months)disbs[m]=(disbs[m]||[]).filter(r=>r.id!==id);
+  saveAll();renderDisbs();toast('Entry deleted','tr');
+}
+function openDisbModal(id){openModal('disb',id||null);}
+
+// ═══════════════════════════════════════════════════════════════
+// DASHBOARD
+// ═══════════════════════════════════════════════════════════════
+const clr={teal:'#1D9E75',blue:'#378ADD',tm:'#5DCAA5',red:'#D85A30',gd:'#C8990A',g2:'#E5E7EB',g4:'#9CA3AF'};
+function P2(n){return`₱${Math.round(n/100)*100>999?Math.round(n/1000)+'k':Math.round(n)}`;}
+
+function mStats(mk){
+  const d=sales[mk]||[];
+  const cash=d.reduce((s,r)=>s+(r.cash||0),0);
+  const gcash=d.reduce((s,r)=>s+(r.gcash||0),0);
+  const exp=(costs[mk]||[]).reduce((s,r)=>s+(r.amount||0),0);
+  return{cash,gcash,total:cash+gcash,exp,net:cash+gcash-exp};
+}
+
+function svgBar(cashArr,gcashArr,labels,W,H){
+  const pad={t:10,r:8,b:24,l:44};
+  const cw=W-pad.l-pad.r,ch=H-pad.t-pad.b,n=cashArr.length;
+  const maxV=Math.max(...cashArr.map((c,i)=>c+(gcashArr[i]||0)),1);
+  const bw=Math.max(3,Math.floor(cw/n)-2);
+  const gp=Math.max(1,(cw-bw*n)/(n+1));
+  let s=`<svg viewBox="0 0 ${W} ${H}" style="width:100%">`;
+  [0,.25,.5,.75,1].forEach(t=>{
+    const y=pad.t+ch*(1-t);
+    s+=`<line x1="${pad.l}" y1="${y}" x2="${W-pad.r}" y2="${y}" stroke="${clr.g2}" stroke-width="1"/>`;
+    if(t>0)s+=`<text x="${pad.l-3}" y="${y+4}" text-anchor="end" fill="${clr.g4}" font-size="9">${P2(maxV*t)}</text>`;
+  });
+  cashArr.forEach((c,i)=>{
+    const x=pad.l+gp+(bw+gp)*i;
+    const tc=Math.round((c||0)/maxV*ch), tg=Math.round((gcashArr[i]||0)/maxV*ch);
+    if(tg>0)s+=`<rect x="${x}" y="${pad.t+ch-tc-tg}" width="${bw}" height="${tg}" fill="${clr.blue}" rx="1"><title>GCash: ${P(gcashArr[i]||0)}</title></rect>`;
+    if(tc>0)s+=`<rect x="${x}" y="${pad.t+ch-tc}" width="${bw}" height="${tc}" fill="${clr.teal}" rx="1"><title>Cash: ${P(c)}</title></rect>`;
+    const skip=n>20?4:n>12?3:n>8?2:1;
+    if(i%skip===0||i===n-1)s+=`<text x="${x+bw/2}" y="${H-4}" text-anchor="middle" fill="${clr.g4}" font-size="8">${labels[i]}</text>`;
+  });
+  return s+`</svg>`;
+}
+
+function svgGroup3(W,H,s1,s2,c1,c2,labs){
+  const pad={t:10,r:8,b:28,l:50},cw=W-pad.l-pad.r,ch=H-pad.t-pad.b,n=s1.length;
+  const maxV=Math.max(...s1,...s2,1);
+  const gw=cw/n,bw=Math.floor(gw*.35),gap=3;
+  let s=`<svg viewBox="0 0 ${W} ${H}" style="width:100%">`;
+  [0,.25,.5,.75,1].forEach(t=>{
+    const y=pad.t+ch*(1-t);
+    s+=`<line x1="${pad.l}" y1="${y}" x2="${W-pad.r}" y2="${y}" stroke="${clr.g2}" stroke-width="1"/>`;
+    if(t>0)s+=`<text x="${pad.l-3}" y="${y+4}" text-anchor="end" fill="${clr.g4}" font-size="9">${P2(maxV*t)}</text>`;
+  });
+  s1.forEach((v,i)=>{
+    const cx=pad.l+gw*i+gw/2;
+    const h1=Math.round(v/maxV*ch),h2=Math.round(s2[i]/maxV*ch);
+    s+=`<rect x="${cx-bw-gap/2}" y="${pad.t+ch-h1}" width="${bw}" height="${h1}" fill="${c1}" rx="2"><title>${labs[i]}: ${P(v)}</title></rect>`;
+    s+=`<rect x="${cx+gap/2}" y="${pad.t+ch-h2}" width="${bw}" height="${h2}" fill="${c2}" rx="2"><title>${labs[i]}: ${P(s2[i])}</title></rect>`;
+    s+=`<text x="${cx}" y="${H-6}" text-anchor="middle" fill="${clr.g4}" font-size="10">${labs[i]}</text>`;
+  });
+  return s+`</svg>`;
+}
+
+function svgDonut(a,b,W,H){
+  const tot=a+b||1,cx=W/2,cy=H/2,r=Math.min(W,H)/2-8,ir=r*.6;
+  function arc(s,e,col){
+    if(e-s>=2*Math.PI)e=s+2*Math.PI-.001;
+    const x1=cx+r*Math.cos(s),y1=cy+r*Math.sin(s),x2=cx+r*Math.cos(e),y2=cy+r*Math.sin(e);
+    const ix1=cx+ir*Math.cos(s),iy1=cy+ir*Math.sin(s),ix2=cx+ir*Math.cos(e),iy2=cy+ir*Math.sin(e);
+    return`<path d="M${ix1},${iy1}L${x1},${y1}A${r},${r} 0 ${e-s>Math.PI?1:0},1 ${x2},${y2}L${ix2},${iy2}A${ir},${ir} 0 ${e-s>Math.PI?1:0},0 ${ix1},${iy1}" fill="${col}"/>`;
+  }
+  const s1=-Math.PI/2,s2=s1+2*Math.PI*(a/tot);
+  let sv=`<svg viewBox="0 0 ${W} ${H}" style="width:100%">`;
+  sv+=arc(s1,s2,clr.teal)+arc(s2,s1+2*Math.PI,clr.blue);
+  sv+=`<text x="${cx}" y="${cy-5}" text-anchor="middle" font-size="13" font-weight="800" fill="#111">${Math.round(a/tot*100)}%</text>`;
+  sv+=`<text x="${cx}" y="${cy+14}" text-anchor="middle" font-size="9" fill="${clr.g4}">Cash</text>`;
+  return sv+`</svg>`;
+}
+
+function svgLineMulti(W,H,monthStats){
+  const pad={t:10,r:8,b:24,l:50},cw=W-pad.l-pad.r,ch=H-pad.t-pad.b,n=31;
+  const palette=['#378ADD','#5DCAA5','#1D9E75','#C8990A','#C97B2E','#5B6A8E','#D85A30'];
+  const dashes=['5,3','3,2','','4,2','6,3','3,3','2,2'];
+  function mtd(mk){const d=sales[mk]||[];let r=0,res=[];for(let i=1;i<=n;i++){const e=d.find(x=>x.day===i);r+=(e?.cash||0)+(e?.gcash||0);res.push(r);}return res;}
+  const allMTD=monthStats.map(st=>mtd(st.mk));
+  const maxV=Math.max(...allMTD.flat(),1);
+  let s=`<svg viewBox="0 0 ${W} ${H}" style="width:100%">`;
+  [0,.25,.5,.75,1].forEach(t=>{
+    const y=pad.t+ch*(1-t);
+    s+=`<line x1="${pad.l}" y1="${y}" x2="${W-pad.r}" y2="${y}" stroke="${clr.g2}" stroke-width="1"/>`;
+    if(t>0)s+=`<text x="${pad.l-3}" y="${y+4}" text-anchor="end" fill="${clr.g4}" font-size="9">${P2(maxV*t)}</text>`;
+  });
+  // Fill for most recent month
+  if(allMTD.length>0){
+    const last=allMTD[allMTD.length-1];
+    const lpts=last.map((v,i)=>`${pad.l+i*(cw/(n-1))},${pad.t+ch*(1-v/maxV)}`);
+    s+=`<polygon points="${lpts.join(' ')} ${W-pad.r},${pad.t+ch} ${pad.l},${pad.t+ch}" fill="${palette[(allMTD.length-1)%palette.length]}" opacity="0.08"/>`;
+  }
+  allMTD.forEach((arr,idx)=>{
+    const col=palette[idx%palette.length], dash=dashes[idx%dashes.length];
+    const pts=arr.map((v,i)=>`${pad.l+i*(cw/(n-1))},${pad.t+ch*(1-v/maxV)}`).join(' ');
+    s+=`<polyline points="${pts}" fill="none" stroke="${col}" stroke-width="${idx===allMTD.length-1?2.5:1.8}" stroke-linejoin="round" stroke-linecap="round" ${dash?`stroke-dasharray="${dash}"`:''}/>`;
+  });
+  [1,7,14,21,28].forEach(d=>{
+    s+=`<text x="${pad.l+(d-1)*(cw/(n-1))}" y="${H-4}" text-anchor="middle" fill="${clr.g4}" font-size="8">${d}</text>`;
+  });
+  return s+`</svg>`;
+}
+
+function buildDashBar(){
+  const ms=getMonths();
+  if(curDash==='latest'||!ms.includes(curDash))curDash=ms[ms.length-1]||ms[0];
+  const bar=document.getElementById('DashBar');
+  if(!bar)return;
+  bar.innerHTML=ms.map(m=>`<button class="mt ${m===curDash?'active':''}" onclick="setDM('${m}',this)">${mkToShort(m)}</button>`).join('')
+    +`<button class="mt ${curDash==='all'?'active':''}" onclick="setDM('all',this)">All Months</button>`;
+}
+function renderDash(){
+  buildDashBar();
+  const W=Math.min((document.querySelector('#tab-dashboard').offsetWidth||700)-40,900);
+  const ms=getMonths();
+  const allStats=ms.map(m=>({mk:m,...mStats(m)}));
+  const feb=mStats('2026-02'), mar=mStats('2026-03'), apr=mStats('2026-04');
+
+  // Month summary cards
+  function mc(cls,lbl,st){return`<div class="mc ${cls}"><div class="mcm ${cls}">${lbl}</div><div class="mr2"><span class="ml2">Total Sales</span><span class="mv2">${P(st.total)}</span></div><div class="mr2"><span class="ml2">Cash</span><span class="mv2">${P(st.cash)}</span></div><div class="mr2"><span class="ml2">GCash</span><span class="mv2">${P(st.gcash)}</span></div><div class="mr2"><span class="ml2">Expenses</span><span class="mv2">${P(st.exp)}</span></div><div class="mr2"><span class="ml2">Net</span><span class="mnet">${P(st.net)}</span></div></div>`;}
+
+  // KPI
+  const allCombined={total:allStats.reduce((a,x)=>a+x.total,0),cash:allStats.reduce((a,x)=>a+x.cash,0),gcash:allStats.reduce((a,x)=>a+x.gcash,0),exp:allStats.reduce((a,x)=>a+x.exp,0),net:allStats.reduce((a,x)=>a+x.net,0)};
+  const s=curDash==='all'?allCombined:(mStats(curDash));
+  const cp=s.total?Math.round(s.cash/s.total*100):0;
+  const kpis=[
+    {l:'Total Sales',v:P(s.total),s:curDash==='all'?'Feb + Mar + Apr':'Month total',c:'var(--teal)'},
+    {l:'Cash',v:P(s.cash),s:cp+'% of total',c:'#185FA5'},
+    {l:'Expenses',v:P(s.exp),s:'Operational',c:'var(--co)'},
+    {l:'Net Revenue',v:P(s.net),s:'After expenses',c:'#3B6D11'}
+  ];
+  document.getElementById('KS').innerHTML=kpis.map(k=>`<div class="kb"><div class="kl">${k.l}</div><div class="kv" style="color:${k.c}">${k.v}</div><div class="ks">${k.s}</div></div>`).join('');
+
+  // Daily chart data
+  let dcCash,dcGcash,dcLabels,dcTitle;
+  if(curDash==='all'){dcCash=[feb.cash,mar.cash,apr.cash];dcGcash=[feb.gcash,mar.gcash,apr.gcash];dcLabels=['Feb','Mar','Apr'];dcTitle='Monthly Sales — All 3 Months';}
+  else{const mk={'feb':'2026-02','mar':'2026-03','apr':'2026-04'}[curDash];const d=(sales[mk]||[]).slice().sort((a,b)=>a.day-b.day);dcCash=d.map(r=>r.cash||0);dcGcash=d.map(r=>r.gcash||0);dcLabels=d.map(r=>r.day);dcTitle=`Daily Sales — ${mkToName(mk)}`;}
+
+  // Expense bar
+  const expStats=[feb.exp,mar.exp,apr.exp];
+
+  const db=document.getElementById('DB');
+  db.innerHTML=`
+    <div class="mc3" style="grid-template-columns:repeat(${Math.min(allStats.length,4)},1fr)">${allStats.map((st,i)=>{const cls=i===0?'mf':i===allStats.length-1?'ma':'mm';return mc(cls,mkToName(st.mk),st);}).join('')}</div>
+    <div class="card">
+      <div class="card-title">${dcTitle}<span style="display:flex;gap:10px"><span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#1D9E75;display:inline-block"></span>Cash</span><span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#378ADD;display:inline-block"></span>GCash</span></span></div>
+      ${svgBar(dcCash,dcGcash,dcLabels,W,200)}
+    </div>
+    <div class="drow">
+      <div class="card">
+        <div class="card-title">Revenue vs Expenses<span style="display:flex;gap:8px"><span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#1D9E75;display:inline-block"></span>Revenue</span><span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#D85A30;display:inline-block"></span>Expenses</span></span></div>
+        ${svgGroup3(Math.floor(W/2)-20,200,allStats.map(x=>x.total),allStats.map(x=>x.exp),clr.teal,clr.red,allStats.map(x=>mkToShort(x.mk)))}
+      </div>
+      <div class="card">
+        <div class="card-title" id="PCt">Payment Split</div>
+        ${svgDonut(s.cash,s.gcash,Math.floor(W/2)-20,160)}
+        <div style="display:flex;gap:12px;justify-content:center;margin-top:8px;flex-wrap:wrap">
+          <span style="display:flex;align-items:center;gap:4px;font-size:11px;color:var(--g500)"><span style="width:10px;height:10px;border-radius:2px;background:#1D9E75;display:inline-block"></span>Cash ${cp}% (${P(s.cash)})</span>
+          <span style="display:flex;align-items:center;gap:4px;font-size:11px;color:var(--g500)"><span style="width:10px;height:10px;border-radius:2px;background:#378ADD;display:inline-block"></span>GCash ${100-cp}% (${P(s.gcash)})</span>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Cumulative Sales Growth — All Months<span style="display:flex;gap:8px"><span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#378ADD;display:inline-block"></span>Feb</span><span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#5DCAA5;display:inline-block"></span>Mar</span><span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#1D9E75;display:inline-block"></span>Apr</span></span></div>
+      ${svgLineMulti(W,200,allStats)}
+    </div>
+  `;
+}
+
+function setDM(m,btn){curDash=m;buildDashBar();renderDash();}
+
+// ═══════════════════════════════════════════════════════════════
+// MODAL SYSTEM (unified)
+// ═══════════════════════════════════════════════════════════════
+function openModal(mode, id){
+  modalMode=mode; editId=id;
+  const box=document.getElementById('MBOX');
+  if(mode==='cust') box.innerHTML = custModalHTML(id);
+  else if(mode==='sales') box.innerHTML = salesModalHTML(id);
+  else if(mode==='cost') box.innerHTML = costModalHTML(id);
+  else if(mode==='disb') box.innerHTML = disbModalHTML(id);
+  document.getElementById('MOV').style.display='flex';
+  setTimeout(()=>box.querySelector('input,select')?.focus(),60);
+}
+function closeModal(){document.getElementById('MOV').style.display='none';editId=null;modalMode='';}
+
+function custModalHTML(id){
+  const c=id?custs.find(x=>x.id===id):null;
+  return`<h3>${c?'Edit Customer':'Add Customer'}</h3>
+  <div class="mgrid">
+    <div class="fg ff"><label>Name *</label><input id="mN" value="${c?.name||''}"></div>
+    <div class="fg ff"><label>📍 Address</label><input id="mA" value="${c?.addr||''}"></div>
+    <div class="fg"><label>Visits</label><input type="number" id="mV" value="${c?.visits||0}" min="0"><div class="hint">Set existing stamp count</div></div>
+    <div class="fg"><label>Phone</label><input id="mPh" value="${c?.phone||''}"></div>
+  </div>
+  <div class="macts"><button class="bc" onclick="closeModal()">Cancel</button><button class="bp" onclick="saveC()">Save</button></div>`;
+}
+function salesModalHTML(id){
+  let rec=null;
+  for(const m of months){rec=(sales[m]||[]).find(r=>r.id===id);if(rec)break;}
+  const today=new Date().toISOString().slice(0,10);
+  const dateVal=rec?`${curSM}-${String(rec.day).padStart(2,'0')}`:today;
+  return`<h3>${rec?'Edit Sales Entry':'Add Sales Entry'}</h3>
+  <div class="mgrid">
+    <div class="fg ff"><label>Date *</label><input type="date" id="mDate" value="${dateVal}"></div>
+    <div class="fg"><label>Cash (₱)</label><input type="number" id="mCash" value="${rec?.cash||0}" min="0" step="0.01" class="num"></div>
+    <div class="fg"><label>GCash (₱)</label><input type="number" id="mGcash" value="${rec?.gcash||0}" min="0" step="0.01" class="num"></div>
+    <div class="fg ff"><label>Notes</label><input id="mNotes" value="${rec?.notes||''}"></div>
+  </div>
+  <div class="macts"><button class="bc" onclick="closeModal()">Cancel</button><button class="bp" onclick="saveSales()">Save</button></div>`;
+}
+function costModalHTML(id){
+  let rec=null;
+  for(const m of months){rec=(costs[m]||[]).find(r=>r.id===id);if(rec)break;}
+  return`<h3>${rec?'Edit Expense':'Add Expense'}</h3>
+  <div class="mgrid">
+    <div class="fg ff"><label>Month</label><select id="mMon">${getMonths().map(m=>`<option value="${m}" ${(rec?curOM:curOM)===m?'selected':''}>${mkToName(m)}</option>`).join('')}</select></div>
+    <div class="fg ff"><label>Category / Item *</label><input id="mCat" value="${rec?.cat||''}"></div>
+    <div class="fg"><label>Amount (₱)</label><input type="number" id="mAmt" value="${rec?.amount||''}" min="0" step="0.01" class="num"></div>
+    <div class="fg"><label>Remarks</label><input id="mRem" value="${rec?.remarks||''}"></div>
+  </div>
+  <div class="macts"><button class="bc" onclick="closeModal()">Cancel</button><button class="bp" onclick="saveCost()">Save</button></div>`;
+}
+function disbModalHTML(id){
+  let rec=null;
+  for(const m of months){rec=(disbs[m]||[]).find(r=>r.id===id);if(rec)break;}
+  const today=new Date().toISOString().slice(0,10);
+  return`<h3>${rec?'Edit Disbursement':'Add Disbursement'}</h3>
+  <div class="mgrid">
+    <div class="fg ff"><label>Month</label><select id="mMon">${getMonths().map(m=>`<option value="${m}" ${(rec?curDM:curDM)===m?'selected':''}>${mkToName(m)}</option>`).join('')}</select></div>
+    <div class="fg ff"><label>Date *</label><input type="date" id="mDate" value="${rec?.date||today}"></div>
+    <div class="fg ff"><label>Purpose / Item *</label><input id="mItem" value="${rec?.item||''}"></div>
+    <div class="fg"><label>Amount (₱)</label><input type="number" id="mAmt" value="${rec?.amount||''}" min="0" step="0.01" class="num"></div>
+    <div class="fg"><label>Remarks</label><input id="mRem" value="${rec?.remarks||''}"></div>
+  </div>
+  <div class="macts"><button class="bc" onclick="closeModal()">Cancel</button><button class="bp" onclick="saveDisb()">Save</button></div>`;
+}
+
+// Save functions
+function saveC(){
+  const name=document.getElementById('mN').value.trim();
+  if(!name){alert('Name required');return;}
+  const addr=document.getElementById('mA').value.trim();
+  const visits=Math.max(0,parseInt(document.getElementById('mV').value)||0);
+  const phone=document.getElementById('mPh').value.trim();
+  if(editId){const c=custs.find(x=>x.id===editId);if(c){c.name=name;c.addr=addr;c.visits=visits;c.phone=phone;}}
+  else custs.push({id:gid(),name,addr,phone,visits,log:[]});
+  saveAll();closeModal();renderCards();toast(editId?`✓ ${name} updated`:`✓ ${name} added`,'tt');
+}
+function saveSales(){
+  const dateStr=document.getElementById('mDate').value;
+  if(!dateStr){alert('Date required');return;}
+  const d=new Date(dateStr+'T00:00:00');
+  const mk=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+  const day=d.getDate();
+  const cash=parseFloat(document.getElementById('mCash').value)||0;
+  const gcash=parseFloat(document.getElementById('mGcash').value)||0;
+  const notes=document.getElementById('mNotes').value.trim();
+  if(!sales[mk])sales[mk]=[];
+  if(editId){
+    for(const m of months){const r=(sales[m]||[]).find(x=>x.id===editId);if(r){r.day=day;r.cash=cash;r.gcash=gcash;r.notes=notes;break;}}
+  } else {
+    if(sales[mk].find(r=>r.day===day)){if(!confirm(`Entry for ${mkToName(mk)} Day ${day} exists. Add another?`))return;}
+    sales[mk].push({id:gid(),day,cash,gcash,notes});
+  }
+  saveAll();closeModal();curSM=mk;renderSales();toast('Sales entry saved','tt');
+}
+function saveCost(){
+  const mk=document.getElementById('mMon').value;
+  const cat=document.getElementById('mCat').value.trim();
+  if(!cat){alert('Category required');return;}
+  const amount=parseFloat(document.getElementById('mAmt').value)||0;
+  const remarks=document.getElementById('mRem').value.trim();
+  if(!costs[mk])costs[mk]=[];
+  if(editId){for(const m of months){const r=(costs[m]||[]).find(x=>x.id===editId);if(r){r.cat=cat;r.amount=amount;r.remarks=remarks;break;}}}
+  else costs[mk].push({id:gid(),cat,amount,remarks});
+  saveAll();closeModal();curOM=mk;renderCosts();toast('Expense saved','tt');
+}
+function saveDisb(){
+  const mk=document.getElementById('mMon').value;
+  const date=document.getElementById('mDate').value;
+  const item=document.getElementById('mItem').value.trim();
+  if(!item){alert('Item required');return;}
+  const amount=parseFloat(document.getElementById('mAmt').value)||0;
+  const remarks=document.getElementById('mRem').value.trim();
+  if(!disbs[mk])disbs[mk]=[];
+  if(editId){for(const m of months){const r=(disbs[m]||[]).find(x=>x.id===editId);if(r){r.date=date;r.item=item;r.amount=amount;r.remarks=remarks;break;}}}
+  else disbs[mk].push({id:gid(),date,item,amount,remarks});
+  saveAll();closeModal();curDM=mk;renderDisbs();toast('Disbursement saved','tt');
+}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();if(e.key==='Enter'&&document.getElementById('MOV').style.display==='flex'){if(modalMode==='cust')saveC();else if(modalMode==='sales')saveSales();else if(modalMode==='cost')saveCost();else if(modalMode==='disb')saveDisb();}});
+
+// ═══════════════════════════════════════════════════════════════
+// LOYALTY
+// ═══════════════════════════════════════════════════════════════
+function msI(v){
+  if(!v)return{isDue:false,type:null,nextMs:5,near:false,pos:0,cn:1};
+  const pos=v%15===0?15:v%15,cn=Math.ceil(v/15),isDue=pos===5||pos===10||pos===15;
+  const type=pos===5?'ib':pos===10?'is':pos===15?'ig':null;
+  const np=pos<5?5:pos<10?10:pos<15?15:null;
+  const nextMs=np!=null?(Math.floor(v/15)*15+np):(Math.ceil(v/15)*15+5);
+  return{isDue,type,nextMs,near:!isDue&&nextMs-v===1,pos,cn,mtype:pos===5?'bz':pos===10?'sv':'gd'};
+}
+function msB(v){const p=v%15===0?15:v%15;return p===5?'🥉 5th Visit — DISCOUNT DUE!':p===10?'🥈 10th Visit — DISCOUNT DUE!':p===15?'🏆 15th Visit — GRAND DISCOUNT!':'';}
+function stamps(v){
+  const pos=v%15===0&&v>0?15:v%15;let h='';
+  for(let i=1;i<=15;i++){const f=i<=pos,mc=i===5?'m5':i===10?'m10':i===15?'m15':'';h+=`<div class="st ${mc} ${f?'f':'e'}">${f?'':i===5?'5':i===10?'10':i===15?'15':''}</div>`;}
+  return h;
+}
+function renderCards(){
+  const q=document.getElementById('SI').value.toLowerCase();
+  const sort=document.getElementById('SS').value;
+  let list=custs.filter(c=>{
+    if(!(c.name.toLowerCase().includes(q)||(c.addr||'').toLowerCase().includes(q)))return false;
+    const i=msI(c.visits);
+    return AF==='due'?i.isDue:AF==='near'?(i.near&&!i.isDue):AF==='miss'?(!c.addr||!c.addr.trim()):true;
+  });
+  list.sort((a,b)=>{
+    if(sort==='az')return a.name.localeCompare(b.name);
+    if(sort==='vd')return b.visits-a.visits;if(sort==='va')return a.visits-b.visits;
+    const ai=msI(a.visits),bi=msI(b.visits);
+    if(ai.isDue&&!bi.isDue)return-1;if(!ai.isDue&&bi.isDue)return 1;
+    if(ai.near&&!bi.near)return-1;if(!ai.near&&bi.near)return 1;
+    return b.visits-a.visits;
+  });
+  const g=document.getElementById('CG');
+  if(!list.length){g.innerHTML=`<div class="empty"><div style="font-size:40px;margin-bottom:12px">🧺</div><h3>No customers found</h3></div>`;renderStats();return;}
+  g.innerHTML=list.map(c=>{
+    const i=msI(c.visits),pos=c.visits%15===0&&c.visits>0?15:c.visits%15;
+    const ha=c.addr&&c.addr.trim();
+    const nt=i.isDue?'Apply discount before next visit':(i.nextMs?`${i.nextMs-c.visits} visit${i.nextMs-c.visits!==1?'s':''} to next discount`:'');
+    const log=c.log?.length?c.log.slice(-3).reverse().map(l=>`<div class="hi"><span>${l.date}</span><span class="${l.ms?'hm':''}">${l.ms?'🎁 Visit #'+l.v+' (Milestone)':'Visit #'+l.v}</span></div>`).join(''):'<div class="hi" style="color:var(--g400)">No log yet</div>';
+    return`<div class="cc ${i.type||''} ${i.near&&!i.isDue?'in':''}">
+      <div class="msb">${msB(c.visits)}</div>
+      <div class="cbd">
+        <div class="ch">
+          <div>
+            <div class="cn">${c.name}</div>
+            <div class="adr ${ha?'':'miss'}"><span style="font-size:11px;flex-shrink:0">📍</span><span style="font-size:10px;font-weight:700;color:var(--g400);text-transform:uppercase;flex-shrink:0;margin-right:3px">Addr:</span>${ha?`<span style="font-size:12px;color:var(--g700);font-weight:500">${c.addr}</span>`:`<span style="font-size:11px;color:var(--g400);font-style:italic">Missing — click ✏️ to add</span>`}</div>
+            ${c.phone?`<div style="font-size:11px;color:var(--g500);margin-top:3px">📞 ${c.phone}</div>`:''}
+          </div>
+          <span class="cbdg">Card #${i.cn}</span>
+        </div>
+        <div class="vr"><div><div class="vn">${c.visits}</div><div class="vl">Total Visits</div></div><div class="vrt"><div class="vcp">${pos}/15 this card</div><div class="vnx">${nt}</div></div></div>
+        <div class="sg">${stamps(c.visits)}</div>
+        <div class="sleg"><span class="sl"><span class="sd" style="background:var(--bz)"></span>5th</span><span class="sl"><span class="sd" style="background:var(--sv)"></span>10th</span><span class="sl"><span class="sd" style="background:var(--gd)"></span>15th = Discount</span></div>
+        <div class="ca">
+          <button class="bv" onclick="addV('${c.id}')">+ Record Visit</button>
+          <button class="bsm2" onclick="undoV('${c.id}')" title="Undo">↩</button>
+          <button class="bsm2" onclick="openModal('cust','${c.id}')" title="Edit">✏️</button>
+          <button class="bdl" onclick="delC('${c.id}')" title="Delete">✕</button>
+        </div>
+        <span class="ht" onclick="togH('${c.id}')">▸ Visit history</span>
+        <div class="hp" id="hp-${c.id}">${log}</div>
+      </div>
+    </div>`;
+  }).join('');
+  renderStats();
+}
+function togH(id){const p=document.getElementById('hp-'+id),t=p.previousElementSibling,o=p.style.display==='block';p.style.display=o?'none':'block';t.textContent=(o?'▸':'▾')+' Visit history';}
+function renderStats(){
+  const tot=custs.length,due=custs.filter(c=>msI(c.visits).isDue).length;
+  const near=custs.filter(c=>{const i=msI(c.visits);return i.near&&!i.isDue}).length;
+  const miss=custs.filter(c=>!c.addr||!c.addr.trim()).length;
+  document.getElementById('SB').innerHTML=`<div class="sb"><div class="sbn c-t">${tot}</div><div class="sbl">Customers</div></div><div class="sb"><div class="sbn c-g">${due}</div><div class="sbl">Discount Due 🎁</div></div><div class="sb"><div class="sbn c-b">${near}</div><div class="sbl">1 Visit Away ⚡</div></div><div class="sb"><div class="sbn c-r">${miss}</div><div class="sbl">Missing Addr 📍</div></div>`;
+}
+function addV(id){
+  const c=custs.find(x=>x.id===id);if(!c)return;c.visits++;if(!c.log)c.log=[];
+  const i=msI(c.visits),d=new Date().toLocaleDateString('en-PH',{month:'short',day:'numeric',year:'numeric'});
+  c.log.push({v:c.visits,ts:Date.now(),date:d,ms:i.isDue});saveAll();
+  if(i.isDue){const p=c.visits%15===0?15:c.visits%15;toast(`🎉 ${c.name} — ${p===5?'5th':p===10?'10th':'15th'} DISCOUNT DUE!`,'t'+i.mtype);}
+  else if(i.near)toast(`⚡ ${c.name} is 1 visit away!`,'tb');
+  else toast(`✓ Visit #${c.visits} for ${c.name}`,'tt');
+  renderCards();
+}
+function undoV(id){const c=custs.find(x=>x.id===id);if(!c||c.visits<=0)return;if(confirm(`Remove last visit for ${c.name}?`)){c.visits--;if(c.log?.length)c.log.pop();saveAll();toast(`↩ Removed`);renderCards();}}
+function delC(id){const c=custs.find(x=>x.id===id);if(!c)return;if(confirm(`Remove ${c.name}?`)){custs=custs.filter(x=>x.id!==id);saveAll();renderCards();toast(`Removed`);}}
+function setF(f,btn){AF=f;document.querySelectorAll('.ft').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderCards();}
+
+// ═══════════════════════════════════════════════════════════════
+// EXPORT CSV
+// ═══════════════════════════════════════════════════════════════
+function exportCSV(){
+  const t=curTab;
+  let rows,fn;
+  if(t==='loyalty'){
+    rows=[['Name','Address','Phone','Total Visits','Card #','Position','Next Discount','Due?']];
+    custs.forEach(c=>{const i=msI(c.visits),pos=c.visits%15===0&&c.visits>0?15:c.visits%15;rows.push([c.name,c.addr||'',c.phone||'',c.visits,`Card #${i.cn}`,`${pos}/15`,i.isDue?'NOW':i.nextMs?`${i.nextMs-c.visits} visits`:'N/A',i.isDue?'YES':'No']);});fn='loyalty.csv';
+  } else if(t==='sales'){
+    rows=[['Month','Day','Cash','GCash','Total','Notes']];
+    getMonths().forEach(m=>(sales[m]||[]).sort((a,b)=>a.day-b.day).forEach(r=>rows.push([mkToName(m),r.day,r.cash,r.gcash,(r.cash||0)+(r.gcash||0),r.notes||''])));fn='sales.csv';
+  } else if(t==='opcosts'){
+    rows=[['Month','Category','Amount','Remarks']];
+    getMonths().forEach(m=>(costs[m]||[]).forEach(r=>rows.push([mkToName(m),r.cat,r.amount,r.remarks||''])));fn='opcosts.csv';
+  } else if(t==='txn'){
+    rows=[['Date','Customer','Address','Card #','Services','Qty','Unit Price','Amount','Promo','Total','Payment','Delivery']];
+    Object.keys(txns).sort().forEach(m=>(txns[m]||[]).sort((a,b)=>a.date.localeCompare(b.date)).forEach(tx=>{
+      tx.items.forEach((it,idx)=>{
+        const svc=SVC_MAP[it.svcId];const nm=svc?svc.name:(it.customName||'Custom');
+        const gross=tx.items.reduce((s,l)=>s+(l.unitPrice||0)*(l.qty||1),0);
+        rows.push(idx===0?[tx.date,tx.custName,tx.custAddr||'',tx.cardNo||'',nm,it.qty,it.unitPrice,gross,tx.promo||0,gross-(tx.promo||0),tx.payment,tx.delivery]:[tx.date,'','','',nm,it.qty,it.unitPrice,'','','','','']);
+      });
+    }));fn='transactions.csv';
+  } else {
+    rows=[['Month','Date','Item','Amount','Remarks']];
+    getMonths().forEach(m=>(disbs[m]||[]).sort((a,b)=>a.date.localeCompare(b.date)).forEach(r=>rows.push([mkToName(m),r.date,r.item,r.amount,r.remarks||''])));fn='disbursements.csv';
+  }
+  const csv=rows.map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const a=document.createElement('a');a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);a.download='cayabyab_'+fn;a.click();
+}
+
+// ═══════════════════════════════════════════════════════════════
+// BACKUP & RESTORE
+// ═══════════════════════════════════════════════════════════════
+function backupData(){
+  const payload={
+    version:3,
+    savedAt:new Date().toISOString(),
+    savedAtReadable:new Date().toLocaleString('en-PH',{dateStyle:'long',timeStyle:'short'}),
+    sales,costs,disbs,custs,txns
+  };
+  const json=JSON.stringify(payload,null,2);
+  const a=document.createElement('a');
+  const date=new Date().toISOString().slice(0,10);
+  a.href='data:application/json;charset=utf-8,'+encodeURIComponent(json);
+  a.download=`cayabyab_backup_${date}.json`;
+  a.click();
+  toast('💾 Backup downloaded! Save it somewhere safe.','tt');
+}
+
+function restoreData(event){
+  const file=event.target.files[0];
+  if(!file)return;
+  const reader=new FileReader();
+  reader.onload=function(e){
+    try{
+      const data=JSON.parse(e.target.result);
+      // Validate it's our backup format
+      if(!data.version||!data.custs){
+        alert('❌ This does not look like a valid Cayabyab backup file.\n\nMake sure you select the correct .json file that was created by the 💾 Backup button.');
+        return;
+      }
+      const savedAt=data.savedAtReadable||data.savedAt||'unknown date';
+      const custCount=data.custs?.length||0;
+      const confirm1=confirm(
+        `📂 Restore backup?\n\n`+
+        `Backup date: ${savedAt}\n`+
+        `Customers: ${custCount}\n\n`+
+        `⚠️ This will REPLACE all current data with the backup.\n\nContinue?`
+      );
+      if(!confirm1)return;
+      // Restore
+      if(data.sales)sales=data.sales;
+      if(data.costs)costs=data.costs;
+      if(data.disbs)disbs=data.disbs;
+      if(data.custs)custs=data.custs;
+      if(data.txns)txns=data.txns;
+      saveAll();
+      // Refresh current view
+      if(curTab==='loyalty')renderCards();
+      else if(curTab==='dashboard')renderDash();
+      else if(curTab==='sales')renderSales();
+      else if(curTab==='opcosts')renderCosts();
+      else if(curTab==='disb')renderDisbs();
+      else if(curTab==='txn')renderTxns();
+      toast(`✅ Backup restored from ${savedAt}`,'tt');
+    } catch(err){
+      alert('❌ Could not read the backup file. Make sure it is a valid .json file from this app.');
+    }
+    // Reset file input so same file can be selected again if needed
+    event.target.value='';
+  };
+  reader.readAsText(file);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// ADD NEW MONTH
+// ═══════════════════════════════════════════════════════════════
+function openAddMonthModal(){
+  modalMode='month';editId=null;
+  const now=new Date();
+  const yr=now.getFullYear();
+  const mo=String(now.getMonth()+2).padStart(2,'0'); // default next month
+  const defVal=`${yr}-${mo}`;
+  document.getElementById('MBOX').innerHTML=`
+    <h3>➕ Add New Month</h3>
+    <p style="font-size:13px;color:var(--g500);margin-bottom:14px">This creates a new month tab in Daily Sales, Op Costs, Disbursements, and the Dashboard. You can then add entries to it.</p>
+    <div class="fg">
+      <label>Select Month & Year *</label>
+      <input type="month" id="mNewMonth" value="${defVal}" style="font-size:15px;padding:10px">
+    </div>
+    <div class="macts"><button class="bc" onclick="closeModal()">Cancel</button><button class="bp" onclick="saveNewMonth()">Add Month</button></div>`;
+  document.getElementById('MOV').style.display='flex';
+  setTimeout(()=>document.getElementById('mNewMonth').focus(),60);
+}
+function saveNewMonth(){
+  const val=document.getElementById('mNewMonth').value;
+  if(!val){alert('Please select a month.');return;}
+  const mk=val; // already in YYYY-MM format
+  const existing=getMonths();
+  if(existing.includes(mk)){
+    alert(`${mkToName(mk)} already exists!`);return;
+  }
+  // Create empty arrays for this month in all stores
+  if(!sales[mk])sales[mk]=[];
+  if(!costs[mk])costs[mk]=[];
+  if(!disbs[mk])disbs[mk]=[];
+  saveAll();
+  closeModal();
+  // Navigate to the new month in whichever tab is active
+  curSM=mk;curOM=mk;curDM=mk;curDash=mk;
+  if(curTab==='sales')renderSales();
+  else if(curTab==='opcosts')renderCosts();
+  else if(curTab==='disb')renderDisbs();
+  else if(curTab==='dashboard'){renderDash();}
+  toast(`✅ ${mkToName(mk)} added! Start entering data.`,'tt');
+}
+
+// TOAST
+let _tt;
+function toast(msg,cls=''){const t=document.getElementById('TT');t.textContent=msg;t.className='toast vis '+(cls||'');clearTimeout(_tt);_tt=setTimeout(()=>{t.className='toast';},3500);}
+
+// INIT
+loadAll();
+// Set active month to latest
+(function(){
+  const ms=getMonths();
+  const latest=ms[ms.length-1]||'2026-04';
+  curSM=latest; curOM=latest; curDM=latest; curDash='latest';
+})();
+renderCards();
+</script>
+</body>
+</html>
